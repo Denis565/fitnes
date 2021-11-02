@@ -59,28 +59,32 @@ public class EmployeeController {
             return "employee/employee-add";
         }*/
 
+        boolean passportSeriesB = true;
+        boolean passportNumberB = true;
+        boolean employeeFIO = true;
+        boolean employeeDate = true;
+        boolean binding = true;
+
         if (bindingResult.hasErrors() || bindingResultPass.hasErrors()){
-            return "employee/employee-add";
+            binding = false;
         }
 
         if (passportRepository.findBySeries(passport.getSeries()) != null){
             ObjectError error = new ObjectError("series","Паспорт с такой серией уже существует");
             bindingResult.addError(error);
-            return "employee/employee-add";
-
+            passportSeriesB = false;
         }
 
         if (passportRepository.findByNumber(passport.getNumber()) != null){
             ObjectError error = new ObjectError("number","Паспорт с таким номером уже существует");
             bindingResult.addError(error);
-            return "employee/employee-add";
-
+            passportNumberB = false;
         }
 
         if (employeeRepository.findBySurnameAndNameAndPatronymic(employee.getSurname(),employee.getName(),employee.getPatronymic()) != null){
             ObjectError error = new ObjectError("surname","Пользователь с таким ФИО уже существует");
             bindingResult.addError(error);
-            return "employee/employee-add";
+            employeeFIO=false;
         }
 
         if (employee.getDateBirth()!=null) {
@@ -90,8 +94,12 @@ public class EmployeeController {
             if (date.after(new Date())) {
                 ObjectError error = new ObjectError("dateBirth", "Дата не может быть больше сегодняшнего дня.");
                 bindingResult.addError(error);
-                return "employee/employee-add";
+                employeeDate=false;
             }
+        }
+
+        if(!passportNumberB ||!passportSeriesB || !employeeFIO || !employeeDate || !binding){
+            return "employee/employee-add";
         }
 
         passportRepository.save(passport);
@@ -151,27 +159,37 @@ public class EmployeeController {
             return "employee/edit-employee";
         }
 
+        boolean passportSeriesB = true;
+        boolean passportNumberB = true;
+        boolean employeeFIO = true;
+        boolean employeeDate = true;
+        boolean binding = true;
+
         Passport passSeries = passportRepository.findBySeries(passport.getSeries());
         Passport passNumber = passportRepository.findByNumber(passport.getNumber());
         Employee emp = employeeRepository.findBySurnameAndNameAndPatronymic(employee.getSurname(),employee.getName(),employee.getPatronymic());
         Long idPas = passport.getId();
 
+        if (bindingResult.hasErrors() || bindingResultPass.hasErrors()){
+            binding = false;
+        }
+
         if (passSeries != null && !passSeries.getId().equals(idPas)){
             ObjectError error = new ObjectError("series","Паспорт с такой серией уже существует");
             bindingResult.addError(error);
-            return "employee/edit-employee";
+            passportSeriesB = false;
         }
 
         if (passNumber != null && !passNumber.getId().equals(idPas)){
             ObjectError error = new ObjectError("number","Паспорт с таким номером уже существует");
             bindingResult.addError(error);
-            return "employee/edit-employee";
+            passportNumberB = false;
         }
 
         if (emp!= null && !emp.getId().equals(employee.getId())){
             ObjectError error = new ObjectError("surname","Пользователь с таким ФИО уже существует");
             bindingResult.addError(error);
-            return "employee/edit-employee";
+            employeeFIO = false;
         }
 
         if (employee.getDateBirth()!=null) {
@@ -181,8 +199,12 @@ public class EmployeeController {
             if (date.after(new Date())) {
                 ObjectError error = new ObjectError("dateBirth", "Дата не может быть больше сегодняшнего дня.");
                 bindingResult.addError(error);
-                return "employee/edit-employee";
+                employeeDate = false;
             }
+        }
+
+        if(!passportNumberB ||!passportSeriesB || !employeeFIO || !employeeDate || !binding){
+            return "employee/edit-employee";
         }
 
         passportRepository.save(passport);
