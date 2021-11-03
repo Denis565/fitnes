@@ -14,8 +14,8 @@ public class MainController {
 
     @GetMapping("/")
     public String employeeview(Model model) {
-        Iterable<Employee> guns = employeeRepository.findAll();
-        model.addAttribute("allEmployee",guns);
+        Iterable<Employee> emp = employeeRepository.findAll();
+        model.addAttribute("allEmployee",emp);
         return "employee/employee-view";
     }
 }

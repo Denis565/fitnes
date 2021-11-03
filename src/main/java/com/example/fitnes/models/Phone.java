@@ -15,6 +15,7 @@ public class Phone {
     private Long id;
 
     @NotEmpty(message = "Данное поле не должно быть пустым")
+    @Size(min = 11,max=11,message = "В основном телефоне длжно быть 11 цифр")
     private String mainPhone;
 
     @Size(min = 0,max=11,message = "Миниму 2 символа, максимум 11 символов")

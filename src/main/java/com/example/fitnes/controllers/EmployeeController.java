@@ -114,8 +114,8 @@ public class EmployeeController {
             @PathVariable(value = "id") Long id,
             Model model)
     {
-        Employee gun = employeeRepository.findById(id).orElseThrow();
-        employeeRepository.delete(gun);
+        Employee employeeDelete = employeeRepository.findById(id).orElseThrow();
+        employeeRepository.delete(employeeDelete);
         return "redirect:/";
     }
 
@@ -139,7 +139,7 @@ public class EmployeeController {
         employee.setPlaceResidence(emp.getPlaceResidence());
         employee.setGender(emp.getGender());
 
-        Passport pass = passportRepository.findById(emp.getId()).orElseThrow();
+        Passport pass = passportRepository.findById(emp.getPassport().getId()).orElseThrow();
         passport.setNumber(pass.getNumber());
         passport.setSeries(pass.getSeries());
 
@@ -154,10 +154,6 @@ public class EmployeeController {
             @Valid Passport passport,
             BindingResult bindingResultPass,
             Model model) throws ParseException {
-
-        if (bindingResult.hasErrors() || bindingResultPass.hasErrors()){
-            return "employee/edit-employee";
-        }
 
         boolean passportSeriesB = true;
         boolean passportNumberB = true;
