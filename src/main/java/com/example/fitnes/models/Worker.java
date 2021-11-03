@@ -16,7 +16,7 @@ public class Worker {
     private Long id; //Код
 
     @NotEmpty(message = "Данное поле не должно быть пустым")
-    @Size(min = 6,max=50,message = "Минимальное число символов 2, а максимально 50 символов")
+    @Size(min = 6,max=50,message = "Минимальное число символов 6, а максимально 50 символов")
     private String login;
 
     @NotEmpty(message = "Данное поле не должно быть пустым")

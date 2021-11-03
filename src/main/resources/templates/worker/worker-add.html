@@ -13,15 +13,14 @@
 
 <form method="post" th:object="${phone}">
 
+    <div th:if="${#fields.hasErrors('global')}" th:errors="*{global}" style="color: red">
+        <div th:each="er : ${#fields.errors('global')}" th:text="er${er}"></div>
+    </div>
     <select name="idEmployee" class="form-control">
         <div th:each="el : ${allEmployee}">
             <option th:value="${el.id}" th:text="${el.getSurname()} +'.'+${el.name}+'.'+${el.getPatronymic()}+'.'"></option>
         </div>
     </select>
-
-    <div th:if="${#fields.hasErrors('global')}" th:errors="*{global}" style="color: red">
-        <div th:each="er : ${#fields.errors('global')}" th:text="er${er}"></div>
-    </div>
     <div th:if="${#fields.hasErrors('mainPhone')}" th:errors="*{mainPhone}" style="color: red"></div>
     <input type="tel" th:field="*{mainPhone}" name="mainPhone" maxlength="11" placeholder="Основной телефон" class="form-control">
 

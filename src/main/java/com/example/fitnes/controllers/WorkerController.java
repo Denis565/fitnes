@@ -9,12 +9,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Collections;
 
 @Controller
 @RequestMapping("/worker")
@@ -58,9 +56,10 @@ public class WorkerController {
     @PostMapping("/add")
     public String workeradd(
             @Valid Worker worker,
-            BindingResult bindingResult,
             @Valid Phone phone,
-            BindingResult bindingPhone,
+            BindingResult bindingResult,
+            @RequestParam Long idPost,
+            @RequestParam Long idEmployee,
             Model model) {
 
         boolean phoneB = true;
@@ -70,7 +69,7 @@ public class WorkerController {
         String phH = phone.getHomePhone().replaceAll("[^\\d]", "");
         String phAddition = phone.getAdditionalPhone().replaceAll("[^\\d]", "");
 
-        if (bindingPhone.hasErrors() || bindingPhone.hasErrors()){
+        if (bindingResult.hasErrors()){
             mainB = false;
         }
 
@@ -80,18 +79,39 @@ public class WorkerController {
             phoneB = false;
         }
 
+        Phone phones_list = phoneRepository.findByMainPhone(phM);//найденный телефон
+
+        if(phones_list != null){
+            Worker workSearch = workerRepository.findByPhonelistAndEmployeelist(phones_list.getId(),idEmployee);
+            if (workSearch == null){//не найден
+                ObjectError error = new ObjectError("additionalPhone","Такой телефон уже есть в базе");
+                bindingResult.addError(error);
+                phoneB = false;
+            }
+        }
+
         if (!mainB || !phoneB){
             Iterable<Employee> emp = employeeRepository.findAll();
             Iterable<Post> posts = postRepository.findAll();
             model.addAttribute("allEmployee",emp);
             model.addAttribute("allPost",posts);
+
+
             return "worker/worker-add";
         }
 
+        if(phones_list == null) {
+            phoneRepository.save(phone);
+        }
 
+        worker.setEmployee_list(employeeRepository.findById(idEmployee).orElseThrow());
+        worker.setPost_list(postRepository.findById(idPost).orElseThrow());
+        worker.setActive(true);
+        worker.setRoles(Collections.singleton(Role.USER));
+        worker.setPassword(passwordEncoder.encode(worker.getPassword()));
+        worker.setPhone_list(phoneRepository.findByMainPhone(phM));
 
-
-
+        workerRepository.save(worker);
         return "redirect:/worker/";
     }
 

@@ -159,7 +159,6 @@ public class EmployeeController {
         boolean passportNumberB = true;
         boolean employeeFIO = true;
         boolean employeeDate = true;
-        boolean binding = true;
 
         Passport passSeries = passportRepository.findBySeries(passport.getSeries());
         Passport passNumber = passportRepository.findByNumber(passport.getNumber());
@@ -167,7 +166,7 @@ public class EmployeeController {
         Long idPas = passport.getId();
 
         if (bindingResult.hasErrors() || bindingResultPass.hasErrors()){
-            binding = false;
+            return "employee/edit-employee";
         }
 
         if (passSeries != null && !passSeries.getId().equals(idPas)){
@@ -193,13 +192,13 @@ public class EmployeeController {
             Date date = formatter.parse(employee.getDateBirth().toString());
 
             if (date.after(new Date())) {
-                ObjectError error = new ObjectError("dateBirth", "Дата не может быть больше сегодняшнего дня.");
+                ObjectError error = new ObjectError("dateBirth", "Дата рождения не может быть больше сегодняшнего дня.");
                 bindingResult.addError(error);
                 employeeDate = false;
             }
         }
 
-        if(!passportNumberB ||!passportSeriesB || !employeeFIO || !employeeDate || !binding){
+        if(!passportNumberB ||!passportSeriesB || !employeeFIO || !employeeDate){
             return "employee/edit-employee";
         }
 
