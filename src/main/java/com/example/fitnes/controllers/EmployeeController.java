@@ -38,11 +38,10 @@ public class EmployeeController {
 
     @GetMapping("/add")
     public String addemployeeview(Employee employee,Passport passport, Model model) {
-        Iterable<Employee> employees = employeeRepository.findAll();
-        model.addAttribute("allEmployee",employees);
 
-        Iterable<Post> posts = postRepository.findAll();
-        model.addAttribute("allPosts",posts);
+        String i = new Date().toString();
+
+        employee.setDateBirth(new Date().toString());
 
         return "employee/employee-add";
     }
@@ -87,16 +86,16 @@ public class EmployeeController {
             employeeFIO=false;
         }
 
-        if (employee.getDateBirth()!=null) {
+       /* if (employee.getDateBirth().equals("")) {
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
-            Date date = formatter.parse(employee.getDateBirth().toString());
+            Date date = formatter.parse(employee.getDateBirth());
 
             if (date.after(new Date())) {
-                ObjectError error = new ObjectError("dateBirth", "Дата не может быть больше сегодняшнего дня.");
+                ObjectError error = new ObjectError("dateBirth", "Дата рождения не может быть больше сегодняшнего дня.");
                 bindingResult.addError(error);
                 employeeDate=false;
             }
-        }
+        }*/
 
         if(!passportNumberB ||!passportSeriesB || !employeeFIO || !employeeDate || !binding){
             return "employee/employee-add";

@@ -4,6 +4,7 @@ import net.bytebuddy.implementation.bind.annotation.Empty;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Past;
 import javax.validation.constraints.Size;
 import java.util.Collection;
 
@@ -23,6 +24,7 @@ public class Employee {
 
     @NotEmpty(message = "Данное поле не должно быть пустым")
     @Size(min = 10,max=10,message = "Дата рождения должна быть длиной в 10 символов")
+    @Past(message = "Дата рождения должна быть в прошлом а не будущем")
     private String dateBirth;
 
    // @NotEmpty(message = "Данное поле не должно быть пустым")

@@ -2,6 +2,7 @@ package com.example.fitnes.controllers;
 
 import com.example.fitnes.models.*;
 import com.example.fitnes.repository.*;
+import org.hibernate.criterion.Example;
 import org.hibernate.jdbc.Work;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -12,6 +13,7 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.io.IOException;
 import java.util.Collections;
 
 @Controller
@@ -55,11 +57,12 @@ public class WorkerController {
 
     @PostMapping("/add")
     public String workeradd(
-            @Valid Worker worker,
-            @Valid Phone phone,
-            BindingResult bindingResult,
             @RequestParam Long idPost,
             @RequestParam Long idEmployee,
+            @Valid Worker worker,
+            BindingResult bindingResultW,
+            @Valid Phone phone,
+            BindingResult bindingResult,
             Model model) {
 
         boolean phoneB = true;
@@ -95,8 +98,6 @@ public class WorkerController {
             Iterable<Post> posts = postRepository.findAll();
             model.addAttribute("allEmployee",emp);
             model.addAttribute("allPost",posts);
-
-
             return "worker/worker-add";
         }
 
