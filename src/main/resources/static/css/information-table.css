@@ -1,0 +1,11 @@
+tbody {
+    display:flex;
+}
+tr {
+    display:flex;
+    flex-direction: column;
+    flex-wrap:      wrap;
+}
+td {
+    border: 1px solid black;
+}

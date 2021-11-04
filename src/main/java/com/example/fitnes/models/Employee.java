@@ -1,12 +1,12 @@
 package com.example.fitnes.models;
 
 import net.bytebuddy.implementation.bind.annotation.Empty;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Past;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 import java.util.Collection;
+import java.util.Date;
 
 @Entity
 @Table(name = "EMPLOYEE")
@@ -22,12 +22,12 @@ public class Employee {
 
     private String patronymic;
 
-    @NotEmpty(message = "Данное поле не должно быть пустым")
-    @Size(min = 10,max=10,message = "Дата рождения должна быть длиной в 10 символов")
+    @NotNull(message = "Поле не должно быть пустым")
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     @Past(message = "Дата рождения должна быть в прошлом а не будущем")
-    private String dateBirth;
+    private Date dateBirth;
 
-   // @NotEmpty(message = "Данное поле не должно быть пустым")
+    @NotEmpty(message = "Данное поле не должно быть пустым")
     private String placeResidence;
 
     @NotEmpty(message = "Данное поле не должно быть пустым")
@@ -40,7 +40,7 @@ public class Employee {
     @OneToMany(mappedBy = "employee_list",fetch = FetchType.LAZY)
     private Collection<Worker> workers;
 
-    public Employee(String name, String surname, String patronymic, String dateBirth, String placeResidence, String gender, Passport passport) {
+    public Employee(String name, String surname, String patronymic, Date dateBirth, String placeResidence, String gender, Passport passport) {
         this.name = name;
         this.surname = surname;
         this.patronymic = patronymic;
@@ -84,11 +84,11 @@ public class Employee {
         this.patronymic = patronymic;
     }
 
-    public String getDateBirth() {
+    public Date getDateBirth() {
         return dateBirth;
     }
 
-    public void setDateBirth(String dateBirth) {
+    public void setDateBirth(Date dateBirth) {
         this.dateBirth = dateBirth;
     }
 

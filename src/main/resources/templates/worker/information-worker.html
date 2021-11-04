@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<div th:insert="fragments/header:: header"></div>
+
+<table>
+    <tbody>
+    <tr>
+        <td>1</td>
+        <td>2</td>
+        <td>3</td>
+    </tr>
+    <tr>
+        <div th:each="el : ${oneworker}">
+            <td>4</td>
+            <td>4</td>
+            <td>4</td>
+        </div>
+    </tr>
+    </tbody>
+</table>
+<br>
+<a href="/worker/">Вернуться</a>
+
+</body>
+</html>

@@ -14,7 +14,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/worker")
@@ -60,26 +62,25 @@ public class WorkerController {
             @RequestParam Long idPost,
             @RequestParam Long idEmployee,
             @Valid Worker worker,
-            BindingResult bindingResultW,
+            BindingResult bindingResultWorker,
             @Valid Phone phone,
             BindingResult bindingResult,
             Model model) {
 
-        boolean phoneB = true;
-        boolean mainB = true;
+        boolean errorsB = true;
 
         String phM = phone.getMainPhone().replaceAll("[^\\d]", "");
         String phH = phone.getHomePhone().replaceAll("[^\\d]", "");
         String phAddition = phone.getAdditionalPhone().replaceAll("[^\\d]", "");
 
-        if (bindingResult.hasErrors()){
-            mainB = false;
+        if (bindingResult.hasErrors() || bindingResultWorker.hasErrors()){
+            errorsB = false;
         }
 
         if ((!phM.equals("") && phM.length() < 11) || (!phH.equals("") && phH.length() < 11) || (!phAddition.equals("") && phAddition.length() < 11)){
             ObjectError error = new ObjectError("mainPhone","Телефон должен содержать 11 цифр");
             bindingResult.addError(error);
-            phoneB = false;
+            errorsB = false;
         }
 
         Phone phones_list = phoneRepository.findByMainPhone(phM);//найденный телефон
@@ -89,11 +90,17 @@ public class WorkerController {
             if (workSearch == null){//не найден
                 ObjectError error = new ObjectError("additionalPhone","Такой телефон уже есть в базе");
                 bindingResult.addError(error);
-                phoneB = false;
+                errorsB = false;
             }
         }
 
-        if (!mainB || !phoneB){
+        if (worker.getPassword().equals("")){
+            ObjectError error = new ObjectError("password","Поле с паролем не должно быть пустым");
+            bindingResult.addError(error);
+            errorsB = false;
+        }
+
+        if (!errorsB){
             Iterable<Employee> emp = employeeRepository.findAll();
             Iterable<Post> posts = postRepository.findAll();
             model.addAttribute("allEmployee",emp);
@@ -103,6 +110,8 @@ public class WorkerController {
 
         if(phones_list == null) {
             phoneRepository.save(phone);
+        }else {
+            phone = phones_list;
         }
 
         worker.setEmployee_list(employeeRepository.findById(idEmployee).orElseThrow());
@@ -110,8 +119,7 @@ public class WorkerController {
         worker.setActive(true);
         worker.setRoles(Collections.singleton(Role.USER));
         worker.setPassword(passwordEncoder.encode(worker.getPassword()));
-        worker.setPhone_list(phoneRepository.findByMainPhone(phM));
-
+        worker.setPhone_list(phone);
         workerRepository.save(worker);
         return "redirect:/worker/";
     }
@@ -124,6 +132,109 @@ public class WorkerController {
         Worker workerDelete = workerRepository.findById(id).orElseThrow();
         workerRepository.delete(workerDelete);
         return "redirect:/worker/";
+    }
+
+    @GetMapping("/worker-view/{id}/edit")
+    public String editemployeeview(
+            Worker worker,
+            Phone phone,
+            @PathVariable(value = "id") Long id,
+            Model model)
+    {
+        if (!workerRepository.existsById(id))
+        {
+            return "redirect:/worker/";
+        }
+
+        Worker work = workerRepository.findById(id).orElseThrow();
+        worker.setLogin(work.getLogin());
+        worker.setPassword("");
+
+        Phone ph = phoneRepository.findById(work.getPhone_list().getId()).orElseThrow();
+        phone.setHomePhone(ph.getHomePhone());
+        phone.setAdditionalPhone(ph.getAdditionalPhone());
+        phone.setMainPhone(ph.getMainPhone());
+
+        Iterable<Employee> emp = employeeRepository.findAll();
+        Iterable<Post> posts = postRepository.findAll();
+        model.addAttribute("allEmployee",emp);
+        model.addAttribute("allPost",posts);
+
+        return "worker/edit-worker";
+    }
+
+    @PostMapping("/worker-view/{id}/edit")
+    public String editemployeeview(
+            @PathVariable(value = "id") Long id,
+            @RequestParam Long idPost,
+            @RequestParam Long idEmployee,
+            @Valid Worker worker,
+            BindingResult bindingResult,
+            @Valid Phone phone,
+            BindingResult bindingResultPhone,
+            Model model
+           )
+    {
+        boolean errorsB = true;
+
+        String phM = phone.getMainPhone().replaceAll("[^\\d]", "");
+        String phH = phone.getHomePhone().replaceAll("[^\\d]", "");
+        String phAddition = phone.getAdditionalPhone().replaceAll("[^\\d]", "");
+
+        if (bindingResult.hasErrors() || bindingResultPhone.hasErrors()){
+            errorsB = false;
+        }
+
+        if ((!phM.equals("") && phM.length() < 11) || (!phH.equals("") && phH.length() < 11) || (!phAddition.equals("") && phAddition.length() < 11)){
+            ObjectError error = new ObjectError("mainPhone","Телефон должен содержать 11 цифр");
+            bindingResult.addError(error);
+            errorsB = false;
+        }
+
+        Phone phones_list = phoneRepository.findByMainPhone(phM);//найденный телефон
+
+        if(phones_list != null){
+            Worker workSearch = workerRepository.findByPhonelistAndEmployeelist(phones_list.getId(),idEmployee);
+            if (workSearch == null){//не найден
+                ObjectError error = new ObjectError("additionalPhone","Такой телефон уже есть в базе");
+                bindingResult.addError(error);
+                errorsB = false;
+            }
+        }
+
+        if (!errorsB){
+            Iterable<Employee> emp = employeeRepository.findAll();
+            Iterable<Post> posts = postRepository.findAll();
+            model.addAttribute("allEmployee",emp);
+            model.addAttribute("allPost",posts);
+            return "worker/worker-add";
+        }
+
+        phoneRepository.save(phone);
+
+        worker.setEmployee_list(employeeRepository.findById(idEmployee).orElseThrow());
+        worker.setPost_list(postRepository.findById(idPost).orElseThrow());
+        worker.setActive(true);
+        worker.setRoles(Collections.singleton(Role.USER));
+
+        if (worker.getPassword() == null) {
+            worker.setPassword(workerRepository.findById(id).orElseThrow().getPassword());
+        }else {
+            worker.setPassword(passwordEncoder.encode(worker.getPassword()));
+        }
+        worker.setPhone_list(phone);
+        workerRepository.save(worker);
+        return "redirect:/worker/";
+    }
+
+    @GetMapping("/worker-information/{id}")
+    public String viewinformationworker(@PathVariable(value = "id") Long id, Model model)
+    {
+        Optional<Worker> worker = workerRepository.findById(id);
+        ArrayList<Worker> res = new ArrayList<>();
+        worker.ifPresent(res::add);
+        model.addAttribute("oneworker",res);
+        return "worker/information-worker";
     }
 
 

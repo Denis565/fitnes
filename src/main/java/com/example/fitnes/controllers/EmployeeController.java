@@ -38,11 +38,6 @@ public class EmployeeController {
 
     @GetMapping("/add")
     public String addemployeeview(Employee employee,Passport passport, Model model) {
-
-        String i = new Date().toString();
-
-        employee.setDateBirth(new Date().toString());
-
         return "employee/employee-add";
     }
 
@@ -54,50 +49,31 @@ public class EmployeeController {
             BindingResult bindingResultPass,
             Model model) throws ParseException {
 
-        /*if (!validation(bindingResult,bindingResultPass,passport,employee)){
-            return "employee/employee-add";
-        }*/
-
-        boolean passportSeriesB = true;
-        boolean passportNumberB = true;
-        boolean employeeFIO = true;
-        boolean employeeDate = true;
-        boolean binding = true;
+        boolean errorsB = true;
 
         if (bindingResult.hasErrors() || bindingResultPass.hasErrors()){
-            binding = false;
+            errorsB = false;
         }
 
         if (passportRepository.findBySeries(passport.getSeries()) != null){
             ObjectError error = new ObjectError("series","Паспорт с такой серией уже существует");
             bindingResult.addError(error);
-            passportSeriesB = false;
+            errorsB = false;
         }
 
         if (passportRepository.findByNumber(passport.getNumber()) != null){
             ObjectError error = new ObjectError("number","Паспорт с таким номером уже существует");
             bindingResult.addError(error);
-            passportNumberB = false;
+            errorsB = false;
         }
 
         if (employeeRepository.findBySurnameAndNameAndPatronymic(employee.getSurname(),employee.getName(),employee.getPatronymic()) != null){
             ObjectError error = new ObjectError("surname","Пользователь с таким ФИО уже существует");
             bindingResult.addError(error);
-            employeeFIO=false;
+            errorsB=false;
         }
 
-       /* if (employee.getDateBirth().equals("")) {
-            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
-            Date date = formatter.parse(employee.getDateBirth());
-
-            if (date.after(new Date())) {
-                ObjectError error = new ObjectError("dateBirth", "Дата рождения не может быть больше сегодняшнего дня.");
-                bindingResult.addError(error);
-                employeeDate=false;
-            }
-        }*/
-
-        if(!passportNumberB ||!passportSeriesB || !employeeFIO || !employeeDate || !binding){
+        if(!errorsB){
             return "employee/employee-add";
         }
 
@@ -114,7 +90,9 @@ public class EmployeeController {
             Model model)
     {
         Employee employeeDelete = employeeRepository.findById(id).orElseThrow();
+        Passport passport = passportRepository.findById(employeeDelete.getPassport().getId()).orElseThrow();
         employeeRepository.delete(employeeDelete);
+        passportRepository.delete(passport);
         return "redirect:/";
     }
 
@@ -152,12 +130,9 @@ public class EmployeeController {
             BindingResult bindingResult,
             @Valid Passport passport,
             BindingResult bindingResultPass,
-            Model model) throws ParseException {
+            Model model){
 
-        boolean passportSeriesB = true;
-        boolean passportNumberB = true;
-        boolean employeeFIO = true;
-        boolean employeeDate = true;
+        boolean errorsB = true;
 
         Passport passSeries = passportRepository.findBySeries(passport.getSeries());
         Passport passNumber = passportRepository.findByNumber(passport.getNumber());
@@ -165,80 +140,35 @@ public class EmployeeController {
         Long idPas = passport.getId();
 
         if (bindingResult.hasErrors() || bindingResultPass.hasErrors()){
-            return "employee/edit-employee";
+            errorsB = false;
         }
 
         if (passSeries != null && !passSeries.getId().equals(idPas)){
             ObjectError error = new ObjectError("series","Паспорт с такой серией уже существует");
             bindingResult.addError(error);
-            passportSeriesB = false;
+            errorsB = false;
         }
 
         if (passNumber != null && !passNumber.getId().equals(idPas)){
             ObjectError error = new ObjectError("number","Паспорт с таким номером уже существует");
             bindingResult.addError(error);
-            passportNumberB = false;
+            errorsB = false;
         }
 
         if (emp!= null && !emp.getId().equals(employee.getId())){
             ObjectError error = new ObjectError("surname","Пользователь с таким ФИО уже существует");
             bindingResult.addError(error);
-            employeeFIO = false;
+            errorsB = false;
         }
 
-        if (employee.getDateBirth()!=null) {
-            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
-            Date date = formatter.parse(employee.getDateBirth().toString());
-
-            if (date.after(new Date())) {
-                ObjectError error = new ObjectError("dateBirth", "Дата рождения не может быть больше сегодняшнего дня.");
-                bindingResult.addError(error);
-                employeeDate = false;
-            }
-        }
-
-        if(!passportNumberB ||!passportSeriesB || !employeeFIO || !employeeDate){
+        if(!errorsB){
             return "employee/edit-employee";
         }
+
+        employee.setPassport(passport);
 
         passportRepository.save(passport);
         employeeRepository.save(employee);
         return "redirect:/";
     }
-
-   /* private boolean validation(BindingResult bindingResult,BindingResult bindingResultPass, Passport passport,Employee employee) throws ParseException {
-        if (bindingResult.hasErrors() || bindingResultPass.hasErrors()){
-
-            if (passportRepository.findBySeries(passport.getSeries()) != null){
-                ObjectError error = new ObjectError("series","Паспорт с такой серией уже существует");
-                bindingResult.addError(error);
-            }
-
-            if (passportRepository.findByNumber(passport.getNumber()) != null){
-                ObjectError error = new ObjectError("number","Паспорт с таким номером уже существует");
-                bindingResult.addError(error);
-            }
-
-            return false;
-        }
-
-        if (employeeRepository.findBySurnameAndNameAndPatronymic(employee.getSurname(),employee.getName(),employee.getPatronymic()) != null){
-            ObjectError error = new ObjectError("surname","Пользователь с таким ФИО уже существует");
-            bindingResult.addError(error);
-            return false;
-        }
-
-        if (employee.getDateBirth()!=null) {
-            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
-            Date date = formatter.parse(employee.getDateBirth().toString());
-
-            if (date.after(new Date())) {
-                ObjectError error = new ObjectError("dateBirth", "Дата не может быть больше сегодняшнего дня.");
-                bindingResult.addError(error);
-                return false;
-            }
-        }
-
-        return true;
-    }*/
 }

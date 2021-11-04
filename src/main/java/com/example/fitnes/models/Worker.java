@@ -19,7 +19,7 @@ public class Worker {
     @Size(min = 6,max=50,message = "Минимальное число символов 6, а максимально 50 символов")
     private String login;
 
-    @NotEmpty(message = "Данное поле не должно быть пустым")
+    //@NotEmpty(message = "Данное поле не должно быть пустым")
    // @Size(min = 6,max=50,message = "Минимальное число символов 2, а максимально 50 символов")
     @Column(length = 255)
     private String password;

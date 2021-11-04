@@ -1,8 +1,12 @@
 package com.example.fitnes.models;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import javax.persistence.*;
+import javax.validation.constraints.Future;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
+import java.util.Date;
 
 //График проведения тренеровок
 @Entity
@@ -22,8 +26,9 @@ public class TrainingSchedule {
     private String endTime;
 
     @NotEmpty(message = "Данное поле не должно быть пустым")
-    @Size(min = 10,max=10,message = "Дата должна быть длиной в 10 символов")
-    private String date;
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    @Future(message = "Дата должна быть в будущем")
+    private Date date;
 
     @ManyToOne(optional = true,cascade = CascadeType.ALL)
     private SubscriptionSale subscriptionSale_list;
@@ -31,7 +36,7 @@ public class TrainingSchedule {
     @ManyToOne(optional = true,cascade = CascadeType.ALL)
     private Worker work_list;
 
-    public TrainingSchedule(String startTime, String endTime, String date, SubscriptionSale subscriptionSale_list, Worker work_list) {
+    public TrainingSchedule(String startTime, String endTime, Date date, SubscriptionSale subscriptionSale_list, Worker work_list) {
         this.startTime = startTime;
         this.endTime = endTime;
         this.date = date;
@@ -65,11 +70,11 @@ public class TrainingSchedule {
         this.endTime = endTime;
     }
 
-    public String getDate() {
+    public Date getDate() {
         return date;
     }
 
-    public void setDate(String date) {
+    public void setDate(Date date) {
         this.date = date;
     }
 

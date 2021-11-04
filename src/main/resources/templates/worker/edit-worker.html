@@ -13,23 +13,23 @@
 
 <form method="post" th:object="${phone}">
 
-        <select name="idEmployee" class="form-control">
-            <div th:each="el : ${allEmployee}">
-                <option th:value="${el.id}" th:text="${el.getSurname()} +'.'+${el.name}+'.'+${el.getPatronymic()}+'.'"></option>
-            </div>
-        </select>
+    <select name="idEmployee" class="form-control">
+        <div th:each="el : ${allEmployee}">
+            <option th:value="${el.id}" th:text="${el.getSurname()} +'.'+${el.name}+'.'+${el.getPatronymic()}+'.'"></option>
+        </div>
+    </select>
 
     <div th:if="${#fields.hasErrors('global')}" th:errors="*{global}" style="color: red">
         <div th:each="er : ${#fields.errors('global')}" th:text="er${er}"></div>
     </div>
     <div th:if="${#fields.hasErrors('mainPhone')}" th:errors="*{mainPhone}" style="color: red"></div>
-    <input type="tel" th:field="*{mainPhone}" name="mainPhone" maxlength="11" placeholder="Основной телефон" class="form-control">
+    <input type="tel" th:field="*{mainPhone}" id="mainPhone" maxlength="11" placeholder="Основной телефон" class="form-control">
 
     <div th:if="${#fields.hasErrors('additionalPhone')}" th:errors="*{additionalPhone}" style="color: red"></div>
-    <input type="tel" th:field="*{additionalPhone}" name="additionalPhone" maxlength="11" placeholder="Дополнительный телефон" class="form-control">
+    <input type="tel" th:field="*{additionalPhone}" id="additionalPhone" maxlength="11" placeholder="Дополнительный телефон" class="form-control">
 
     <div th:if="${#fields.hasErrors('homePhone')}" th:errors="*{homePhone}" style="color: red"></div>
-    <input type="tel" th:field="*{homePhone}" name="homePhone" maxlength="11" placeholder="Домашний телефон" class="form-control">
+    <input type="tel" th:field="*{homePhone}" id="homePhone" maxlength="11" placeholder="Домашний телефон" class="form-control">
 
 
 
@@ -41,14 +41,12 @@
 
     <div th:object="${worker}">
         <div th:if="${#fields.hasErrors('login')}" th:errors="*{login}" style="color: red"></div>
-        <input type="tel" th:field="*{login}" name="login" maxlength="50" placeholder="Логин" class="form-control">
-
-        <div th:if="${#fields.hasErrors('password')}" th:errors="*{password}" style="color: red"></div>
-        <input type="tel" th:field="*{password}" name="password" maxlength="100" placeholder="Пароль" class="form-control">
+        <input type="text" th:field="*{login}" id="login" maxlength="50" placeholder="Логин" class="form-control">
+        <input type="text" id="password" maxlength="100" placeholder="Пароль" class="form-control">
     </div>
 
     <div class="d-grid gap-2 col-6 mx-auto">
-        <button type="submit" class="btn btn-warning">Создать работника</button>
+        <button type="submit" class="btn btn-warning">Изменить работника</button>
     </div>
 </form>
 
