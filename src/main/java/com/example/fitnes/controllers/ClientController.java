@@ -208,6 +208,12 @@ public class ClientController {
             // }
         }
 
+        if (client.getWeight().equals("0.0")){
+            ObjectError error = new ObjectError("additionalPhone", "Поле для вееса не должно быть пустым");
+            bindingResult.addError(error);
+            errorsB = false;
+        }
+
         if (passSeries != null && !passSeries.getId().equals(idPas)){
             ObjectError error = new ObjectError("series","Паспорт с такой серией уже существует");
             bindingResult.addError(error);

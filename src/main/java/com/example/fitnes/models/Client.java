@@ -2,6 +2,7 @@ package com.example.fitnes.models;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
+import java.math.BigDecimal;
 import java.util.Collection;
 
 //Клиент
@@ -18,10 +19,10 @@ public class Client {
 
     private String patronymic;
 
-    @NotNull(message = "Данное поле не должно быть пустым")
-    @Max(value = 200,message = "Максимум 200 кг")
-    @Min(value = 30, message = "Минимум 30 кг" )
-    private float weight;//Вес
+    @NotNull(message = "Поле для вееса не должно быть пустым")
+    @DecimalMax(value = "200",message = "Максимум 200 кг")
+    @DecimalMin(value = "30", message = "Минимум 30 кг" )
+    private BigDecimal weight;//Вес
 
     @NotEmpty(message = "Данное поле не должно быть пустым")
     private String gender;//Пол
@@ -37,7 +38,7 @@ public class Client {
     @OneToMany(mappedBy = "client_list",fetch = FetchType.LAZY)
     private Collection<SubscriptionSale> subscriptionSales;
 
-    public Client(String name, String surname, String patronymic, float weight, String gender, Passport passport, Phone phone) {
+    public Client(String name, String surname, String patronymic, BigDecimal weight, String gender, Passport passport, Phone phone) {
         this.name = name;
         this.surname = surname;
         this.patronymic = patronymic;
@@ -81,11 +82,11 @@ public class Client {
         this.patronymic = patronymic;
     }
 
-    public float getWeight() {
+    public BigDecimal getWeight() {
         return weight;
     }
 
-    public void setWeight(float weight) {
+    public void setWeight(BigDecimal weight) {
         this.weight = weight;
     }
 
