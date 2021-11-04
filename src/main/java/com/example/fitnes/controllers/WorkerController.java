@@ -2,8 +2,6 @@ package com.example.fitnes.controllers;
 
 import com.example.fitnes.models.*;
 import com.example.fitnes.repository.*;
-import org.hibernate.criterion.Example;
-import org.hibernate.jdbc.Work;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -11,12 +9,15 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
+import org.thymeleaf.util.DateUtils;
 
 import javax.validation.Valid;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Optional;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 
 @Controller
 @RequestMapping("/worker")
@@ -155,10 +156,16 @@ public class WorkerController {
         phone.setAdditionalPhone(ph.getAdditionalPhone());
         phone.setMainPhone(ph.getMainPhone());
 
+        Employee employeers = employeeRepository.findById(work.getEmployee_list().getId()).orElseThrow();
+        Post post = postRepository.findById(work.getPost_list().getId()).orElseThrow();
+
         Iterable<Employee> emp = employeeRepository.findAll();
         Iterable<Post> posts = postRepository.findAll();
         model.addAttribute("allEmployee",emp);
         model.addAttribute("allPost",posts);
+        model.addAttribute("employeeselected", employeers.getPassport().getId());
+        model.addAttribute("postselected", post.getId());
+
 
         return "worker/edit-worker";
     }
@@ -203,10 +210,15 @@ public class WorkerController {
         }
 
         if (!errorsB){
+
+            Employee employeers = employeeRepository.findById(idEmployee).orElseThrow();
+
             Iterable<Employee> emp = employeeRepository.findAll();
             Iterable<Post> posts = postRepository.findAll();
             model.addAttribute("allEmployee",emp);
             model.addAttribute("allPost",posts);
+            model.addAttribute("employeeselected", employeers.getPassport().getId());
+            model.addAttribute("postselected", idPost);
             return "worker/worker-add";
         }
 
@@ -228,14 +240,22 @@ public class WorkerController {
     }
 
     @GetMapping("/worker-information/{id}")
-    public String viewinformationworker(@PathVariable(value = "id") Long id, Model model)
-    {
-        Optional<Worker> worker = workerRepository.findById(id);
+    public String viewinformationworker(@PathVariable(value = "id") Long id, Model model) {
+        Optional<Worker> workerOptional = workerRepository.findById(id);
+        Worker work = workerOptional.orElseThrow();
+        if (work.getPhone_list().getHomePhone() == null){
+            work.getPhone_list().setHomePhone("Нет данных");
+        }
+        if (work.getEmployee_list().getPlaceResidence() == null){
+            work.getEmployee_list().setPlaceResidence("Нет данных");
+        }
+        if (work.getPhone_list().getAdditionalPhone() == null){
+            work.getPhone_list().setAdditionalPhone("Нет данных");
+        }
         ArrayList<Worker> res = new ArrayList<>();
-        worker.ifPresent(res::add);
+        workerOptional.ifPresent(res::add);
         model.addAttribute("oneworker",res);
         return "worker/information-worker";
     }
-
 
 }

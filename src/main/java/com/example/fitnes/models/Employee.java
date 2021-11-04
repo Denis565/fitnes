@@ -5,6 +5,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Date;
 
@@ -25,7 +26,7 @@ public class Employee {
     @NotNull(message = "Поле не должно быть пустым")
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     @Past(message = "Дата рождения должна быть в прошлом а не будущем")
-    private Date dateBirth;
+    private LocalDate dateBirth;
 
     @NotEmpty(message = "Данное поле не должно быть пустым")
     private String placeResidence;
@@ -40,7 +41,7 @@ public class Employee {
     @OneToMany(mappedBy = "employee_list",fetch = FetchType.LAZY)
     private Collection<Worker> workers;
 
-    public Employee(String name, String surname, String patronymic, Date dateBirth, String placeResidence, String gender, Passport passport) {
+    public Employee(String name, String surname, String patronymic, LocalDate dateBirth, String placeResidence, String gender, Passport passport) {
         this.name = name;
         this.surname = surname;
         this.patronymic = patronymic;
@@ -84,11 +85,11 @@ public class Employee {
         this.patronymic = patronymic;
     }
 
-    public Date getDateBirth() {
+    public LocalDate getDateBirth() {
         return dateBirth;
     }
 
-    public void setDateBirth(Date dateBirth) {
+    public void setDateBirth(LocalDate dateBirth) {
         this.dateBirth = dateBirth;
     }
 

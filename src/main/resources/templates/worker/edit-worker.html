@@ -13,11 +13,16 @@
 
 <form method="post" th:object="${phone}">
 
+    <div th:object="${employee}">
     <select name="idEmployee" class="form-control">
         <div th:each="el : ${allEmployee}">
-            <option th:value="${el.id}" th:text="${el.getSurname()} +'.'+${el.name}+'.'+${el.getPatronymic()}+'.'"></option>
+            <div>
+                <option th:value="${el.id}" th:text="${el.getSurname()} +'.'+${el.name}+'.'+${el.getPatronymic()}+'.'"
+                        th:selected="${el.getPassport().getId() == employeeselected}"></option>
+            </div>
         </div>
     </select>
+    </div>
 
     <div th:if="${#fields.hasErrors('global')}" th:errors="*{global}" style="color: red">
         <div th:each="er : ${#fields.errors('global')}" th:text="er${er}"></div>
@@ -35,7 +40,7 @@
 
     <select name="idPost" class="form-control">
         <div th:each="el : ${allPost}">
-            <option th:value="${el.id}" th:text="${el.getName()}"></option>
+            <option th:value="${el.id}" th:text="${el.getName()}" th:selected="${el.getId() == postselected}"></option>
         </div>
     </select>
 

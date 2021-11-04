@@ -31,9 +31,6 @@ public class EmployeeController {
     private EmployeeRepository employeeRepository;
 
     @Autowired
-    private PostRepository postRepository;
-
-    @Autowired
     private PassportRepository passportRepository;
 
     @GetMapping("/add")

@@ -6,6 +6,7 @@ import javax.persistence.*;
 import javax.validation.constraints.Future;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
+import java.time.LocalDate;
 import java.util.Date;
 
 //График проведения тренеровок
@@ -28,7 +29,7 @@ public class TrainingSchedule {
     @NotEmpty(message = "Данное поле не должно быть пустым")
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     @Future(message = "Дата должна быть в будущем")
-    private Date date;
+    private LocalDate date;
 
     @ManyToOne(optional = true,cascade = CascadeType.ALL)
     private SubscriptionSale subscriptionSale_list;
@@ -36,7 +37,7 @@ public class TrainingSchedule {
     @ManyToOne(optional = true,cascade = CascadeType.ALL)
     private Worker work_list;
 
-    public TrainingSchedule(String startTime, String endTime, Date date, SubscriptionSale subscriptionSale_list, Worker work_list) {
+    public TrainingSchedule(String startTime, String endTime, LocalDate date, SubscriptionSale subscriptionSale_list, Worker work_list) {
         this.startTime = startTime;
         this.endTime = endTime;
         this.date = date;
@@ -70,11 +71,11 @@ public class TrainingSchedule {
         this.endTime = endTime;
     }
 
-    public Date getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(LocalDate date) {
         this.date = date;
     }
 
