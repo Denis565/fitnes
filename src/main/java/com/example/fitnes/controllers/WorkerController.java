@@ -217,7 +217,11 @@ public class WorkerController {
             return "worker/worker-add";
         }
 
-        phoneRepository.save(phone);
+        if (phones_list == null) {
+            phoneRepository.save(phone);
+        }else {
+            phone = phones_list;
+        }
 
         worker.setEmployee_list(employeeRepository.findById(idEmployee).orElseThrow());
         worker.setPost_list(postRepository.findById(idPost).orElseThrow());

@@ -164,7 +164,11 @@ public class EmployeeController {
             return "employee/edit-employee";
         }
 
-        employee.setPassport(passport);
+        if (passNumber == null) {
+            employee.setPassport(passport);
+        }else {
+            passport = passNumber;
+        }
 
         passportRepository.save(passport);
         employeeRepository.save(employee);

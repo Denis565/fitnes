@@ -85,11 +85,6 @@ public class ClientController {
         String phH = phone.getHomePhone().replaceAll("[^\\d]", "");
         String phAddition = phone.getAdditionalPhone().replaceAll("[^\\d]", "");
 
-        Passport passSeries = passportRepository.findBySeries(passport.getSeries());
-        Passport passNumber = passportRepository.findByNumber(passport.getNumber());
-        Client cl = clientRepository.findBySurnameAndNameAndPatronymic(client.getSurname(),client.getName(),client.getPatronymic());
-        Long idPas = passport.getId();
-
         if ((!phM.equals("") && phM.length() < 11) || (!phH.equals("") && phH.length() < 11) || (!phAddition.equals("") && phAddition.length() < 11)){
             ObjectError error = new ObjectError("mainPhone","Телефон должен содержать 11 цифр");
             bindingResult.addError(error);
@@ -104,25 +99,25 @@ public class ClientController {
                 ObjectError error = new ObjectError("additionalPhone","Такой телефон уже есть в базе");
                 bindingResult.addError(error);
                 errorsB = false;
-            //}
+           // }
         }
 
-        if (passSeries != null && !passSeries.getId().equals(idPas)){
+        if (passportRepository.findBySeries(passport.getSeries()) != null){
             ObjectError error = new ObjectError("series","Паспорт с такой серией уже существует");
             bindingResult.addError(error);
             errorsB = false;
         }
 
-        if (passNumber != null && !passNumber.getId().equals(idPas)){
+        if (passportRepository.findByNumber(passport.getNumber()) != null){
             ObjectError error = new ObjectError("number","Паспорт с таким номером уже существует");
             bindingResult.addError(error);
             errorsB = false;
         }
 
-        if (cl!= null && !cl.getId().equals(client.getId())){
+        if (clientRepository.findBySurnameAndNameAndPatronymic(client.getSurname(),client.getName(),client.getPatronymic()) != null){
             ObjectError error = new ObjectError("surname","Пользователь с таким ФИО уже существует");
             bindingResult.addError(error);
-            errorsB = false;
+            errorsB=false;
         }
 
         if (!errorsB){
@@ -139,7 +134,7 @@ public class ClientController {
     }
 
     @GetMapping("/client-view/{id}/edit")
-    public String editemployeeview(
+    public String editclientview(
             Client client,
             Passport passport,
             Phone phone,
@@ -167,4 +162,89 @@ public class ClientController {
         return "/client/edit-client";
 
     }
+
+    @PostMapping("/client-view/{id}/edit")
+    public String editclient(
+            @Valid Client client,
+            BindingResult bindingResult,
+            @Valid Passport passport,
+            BindingResult bindingResultPassport,
+            @Valid Phone phone,
+            BindingResult bindingResultPhone,
+            @PathVariable(value = "id") Long id,
+            Model model) {
+
+        boolean errorsB = true;
+
+        if (bindingResult.hasErrors() || bindingResultPassport.hasErrors() || bindingResultPhone.hasErrors()){
+            errorsB = false;
+        }
+
+        String phM = phone.getMainPhone().replaceAll("[^\\d]", "");
+        String phH = phone.getHomePhone().replaceAll("[^\\d]", "");
+        String phAddition = phone.getAdditionalPhone().replaceAll("[^\\d]", "");
+
+        Passport passSeries = passportRepository.findBySeries(passport.getSeries());
+        Passport passNumber = passportRepository.findByNumber(passport.getNumber());
+        Client cl = clientRepository.findBySurnameAndNameAndPatronymic(client.getSurname(),client.getName(),client.getPatronymic());
+        Long idPas = clientRepository.findById(id).orElseThrow().getPassport().getId();
+
+        if ((!phM.equals("") && phM.length() < 11) || (!phH.equals("") && phH.length() < 11) || (!phAddition.equals("") && phAddition.length() < 11)){
+            ObjectError error = new ObjectError("mainPhone","Телефон должен содержать 11 цифр");
+            bindingResult.addError(error);
+            errorsB = false;
+        }
+
+        Phone phones_list = phoneRepository.findByMainPhone(phM);//найденный телефон
+
+        if(phones_list != null){
+            if (!clientRepository.findById(id).orElseThrow().getPhone().getId().equals(phones_list.getId())) {
+                // Client clientSearch = clientRepository.findByPhonelist(phones_list.getId());//переделать
+                // if (clientSearch == null){//не найден
+                ObjectError error = new ObjectError("additionalPhone", "Такой телефон уже есть в базе");
+                bindingResult.addError(error);
+                errorsB = false;
+            }
+            // }
+        }
+
+        if (passSeries != null && !passSeries.getId().equals(idPas)){
+            ObjectError error = new ObjectError("series","Паспорт с такой серией уже существует");
+            bindingResult.addError(error);
+            errorsB = false;
+        }
+
+        if (passNumber != null && !passNumber.getId().equals(idPas)){
+            ObjectError error = new ObjectError("number","Паспорт с таким номером уже существует");
+            bindingResult.addError(error);
+            errorsB = false;
+        }
+
+        if (cl!= null && !cl.getId().equals(client.getId())){
+            ObjectError error = new ObjectError("surname","Пользователь с таким ФИО уже существует");
+            bindingResult.addError(error);
+            errorsB = false;
+        }
+
+        if (!errorsB){
+            return "client/client-add";
+        }
+
+        if (passSeries ==null && passNumber==null) {
+            passportRepository.save(passport);
+        }else {
+            passport = passNumber;
+        }
+        client.setPassport(passport);
+        if (phones_list == null) {
+            phoneRepository.save(phone);
+        }else {
+            phone = phones_list;
+        }
+        client.setPhone(phone);
+        clientRepository.save(client);
+
+        return "redirect:/client/";
+    }
+
 }
