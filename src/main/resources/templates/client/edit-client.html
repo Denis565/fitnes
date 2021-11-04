@@ -1,10 +1,64 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" th:href="@{/css/add.css}" type="text/css">
 </head>
 <body>
+
+<div th:insert="fragments/header:: header"></div>
+<form method="post" th:object="${client}">
+
+    <div th:if="${#fields.hasErrors('global')}" th:errors="*{global}" style="color: red">
+        <div th:each="er : ${#fields.errors('global')}" th:text="er${er}"></div>
+    </div>
+    <div th:if="${#fields.hasErrors('surname')}" th:errors="*{surname}" style="color: red"></div>
+    <input type="text" th:field="*{surname}" name="surname" maxlength="50" placeholder="Фамилия" class="form-control">
+    <div th:if="${#fields.hasErrors('name')}" th:errors="*{name}" style="color: red"></div>
+    <input type="text" th:field="*{name}" name="name" maxlength="50" placeholder="Имя" class="form-control">
+    <div th:if="${#fields.hasErrors('patronymic')}" th:errors="*{patronymic}" style="color: red"></div>
+    <input type="text" th:field="*{patronymic}" name="patronymic" maxlength="50" placeholder="Отчество" class="form-control">
+
+    <div th:if="${#fields.hasErrors('weight')}" th:errors="*{weight}" style="color: red"></div>
+    <input type="text" th:field="*{weight}" name="weight"  placeholder="Вес" class="form-control" >
+
+    <select name="gender" class="form-control">
+        <option value="Мужской" th:selected="${'Мужской' == genderselected }">Мужской</option>
+        <option value="Женский" th:selected="${'Женский' == genderselected }">Женский</option>
+    </select>
+
+
+    <div th:object="${passport}">
+        <div th:if="${#fields.hasErrors('global')}" th:errors="*{global}" style="color: red">
+            <div th:each="er : ${#fields.errors('global')}" th:text="er${er}"></div>
+        </div>
+        <div th:if="${#fields.hasErrors('series')}" th:errors="*{series}" style="color: red"></div>
+        <input type="number" th:field="*{series}" name="series" maxlength="4" placeholder="Серия паспорта" class="form-control" >
+        <div th:if="${#fields.hasErrors('global')}" th:errors="*{global}" style="color: red">
+            <div th:each="er : ${#fields.errors('global')}" th:text="er${er}"></div>
+        </div>
+        <div th:if="${#fields.hasErrors('number')}" th:errors="*{number}" style="color: red"></div>
+        <input type="number" th:field="*{number}" name="number" maxlength="6" placeholder="Номер паспорта" class="form-control" >
+    </div>
+
+    <div th:object="${phone}">
+        <div th:if="${#fields.hasErrors('mainPhone')}" th:errors="*{mainPhone}" style="color: red"></div>
+        <input type="tel" th:field="*{mainPhone}" name="mainPhone" maxlength="11" placeholder="Основной телефон" class="form-control">
+
+        <div th:if="${#fields.hasErrors('additionalPhone')}" th:errors="*{additionalPhone}" style="color: red"></div>
+        <input type="tel" th:field="*{additionalPhone}" name="additionalPhone" maxlength="11" placeholder="Дополнительный телефон" class="form-control">
+
+        <div th:if="${#fields.hasErrors('homePhone')}" th:errors="*{homePhone}" style="color: red"></div>
+        <input type="tel" th:field="*{homePhone}" name="homePhone" maxlength="11" placeholder="Домашний телефон" class="form-control">
+    </div>
+
+    <div class="d-grid gap-2 col-6 mx-auto">
+        <button type="submit" class="btn btn-warning">Изменить клиента</button>
+    </div>
+</form>
 
 </body>
 </html>

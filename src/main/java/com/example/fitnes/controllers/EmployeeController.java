@@ -117,6 +117,8 @@ public class EmployeeController {
         passport.setNumber(pass.getNumber());
         passport.setSeries(pass.getSeries());
 
+        model.addAttribute("genderselected", employee.getGender());
+
         return "employee/edit-employee";
     }
 

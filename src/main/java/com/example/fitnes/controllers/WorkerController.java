@@ -9,14 +9,8 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
-import org.thymeleaf.util.DateUtils;
 
 import javax.validation.Valid;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Controller
@@ -164,7 +158,7 @@ public class WorkerController {
         model.addAttribute("allEmployee",emp);
         model.addAttribute("allPost",posts);
         model.addAttribute("employeeselected", employeers.getPassport().getId());
-        model.addAttribute("postselected", post.getId());
+        model.addAttribute("postselected", post.getName());
 
 
         return "worker/edit-worker";
@@ -212,13 +206,14 @@ public class WorkerController {
         if (!errorsB){
 
             Employee employeers = employeeRepository.findById(idEmployee).orElseThrow();
+            Post post = postRepository.findById(idPost).orElseThrow();
 
             Iterable<Employee> emp = employeeRepository.findAll();
             Iterable<Post> posts = postRepository.findAll();
             model.addAttribute("allEmployee",emp);
             model.addAttribute("allPost",posts);
             model.addAttribute("employeeselected", employeers.getPassport().getId());
-            model.addAttribute("postselected", idPost);
+            model.addAttribute("postselected", post.getName());
             return "worker/worker-add";
         }
 
@@ -243,13 +238,13 @@ public class WorkerController {
     public String viewinformationworker(@PathVariable(value = "id") Long id, Model model) {
         Optional<Worker> workerOptional = workerRepository.findById(id);
         Worker work = workerOptional.orElseThrow();
-        if (work.getPhone_list().getHomePhone() == null){
+        if (work.getPhone_list().getHomePhone() == null || work.getPhone_list().getHomePhone().equals("") ){
             work.getPhone_list().setHomePhone("Нет данных");
         }
-        if (work.getEmployee_list().getPlaceResidence() == null){
+        if (work.getEmployee_list().getPlaceResidence() == null ||work.getEmployee_list().getPlaceResidence().equals("") ){
             work.getEmployee_list().setPlaceResidence("Нет данных");
         }
-        if (work.getPhone_list().getAdditionalPhone() == null){
+        if (work.getPhone_list().getAdditionalPhone() == null || work.getPhone_list().getAdditionalPhone().equals("")){
             work.getPhone_list().setAdditionalPhone("Нет данных");
         }
         ArrayList<Worker> res = new ArrayList<>();

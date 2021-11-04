@@ -16,8 +16,6 @@ public class Client {
     @Size(min = 2,max=50,message = "Минимальное число символов 2, а максимально 50 символов")
     private String name,surname;
 
-    @NotEmpty(message = "Данное поле не должно быть пустым")
-    @Size(min = 2,max=50,message = "Минимальное число символов 2, а максимально 50 символов")
     private String patronymic;
 
     @NotNull(message = "Данное поле не должно быть пустым")

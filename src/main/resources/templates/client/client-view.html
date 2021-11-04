@@ -14,15 +14,19 @@
 
 <table>
     <colgroup>
-        <col span="6" style="background:Khaki">
+        <col span="12" style="background:Khaki">
     </colgroup>
     <tr>
         <th>Фамилия</th>
         <th>Имя</th>
         <th>Отчество</th>
         <th>Вес</th>
+        <th>Пол</th>
         <th>Серия паспорта</th>
         <th>Номер паспорта</th>
+        <th>Основной телефон</th>
+        <th>Дополнительный телефон</th>
+        <th>Домашний телефон</th>
     </tr>
 
     <div th:each="el : ${allclients}">
@@ -31,8 +35,12 @@
             <td th:text="${el.getName()}"></td>
             <td th:text="${el.getPatronymic()}"></td>
             <td th:text="${el.getWeight()}"></td>
+            <td th:text="${el.getGender()}"></td>
             <td th:text="${el.getPassport().getSeries()}"></td>
             <td th:text="${el.getPassport().getNumber()}"></td>
+            <td th:text="${el.getPhone().getMainPhone()}"></td>
+            <td th:text="${el.getPhone().getAdditionalPhone()}"></td>
+            <td th:text="${el.getPhone().getHomePhone()}"></td>
             <td><a th:href="'/client/client-view/'+${el.id}+'/edit'" class="btn btn-info">Редактировать</a></td>
             <td>
                 <form th:action="'/client/client-view/'+${el.id}+'/del'" method="post">

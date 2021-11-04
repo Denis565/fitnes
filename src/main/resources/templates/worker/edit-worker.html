@@ -40,7 +40,7 @@
 
     <select name="idPost" class="form-control">
         <div th:each="el : ${allPost}">
-            <option th:value="${el.id}" th:text="${el.getName()}" th:selected="${el.getId() == postselected}"></option>
+            <option th:value="${el.id}" th:text="${el.getName()}" th:selected="${el.getName() == postselected}"></option>
         </div>
     </select>
 
