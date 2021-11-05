@@ -3,6 +3,7 @@ package com.example.fitnes.models;
 import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.util.Collection;
+import java.util.List;
 
 //Абонимент
 @Entity
@@ -17,9 +18,10 @@ public class Subscription {
     @Size(min = 2,max=100,message = "Миниму 2 символа, максимум 100 символов")
     private String name; //Наименование абонимента
 
-    @NotEmpty(message = "Данное поле не должно быть пустым")
-    @Size(min = 2,max=100,message = "Миниму 2 символа, максимум 100 символов")
-    private String timePeriod;
+    @NotNull(message = "Данное поле не должно быть пустым")
+    @Max(value = 12,message = "Максимум 12 месяцев")
+    @Min(value = 1, message = "Минимум 1 месяцев" )
+    private int timePeriod;
 
     @NotNull(message = "Данное поле не должно быть пустым")
     @Max(value = 50000,message = "Максимум 50000 рублей")
@@ -31,13 +33,16 @@ public class Subscription {
     @Min(value = 1, message = "Минимум 1" )
     private int subscriptionNumber;
 
-    @ManyToOne(optional = true,cascade = CascadeType.ALL)
-    private Service service_list;
+    @ManyToMany
+    @JoinTable(name = "service_subscription",
+            joinColumns = @JoinColumn(name = "subscription_id"),
+            inverseJoinColumns = @JoinColumn(name = "service_id"))
+    private List<Service> service_list;
 
     @OneToMany(mappedBy = "subscription_list",fetch = FetchType.EAGER)
     private Collection<SubscriptionSale> subscriptionSales;
 
-    public Subscription(String name, String timePeriod, int price, int subscriptionNumber, Service service_list) {
+    public Subscription(String name, int timePeriod, int price, int subscriptionNumber, List<Service> service_list, Collection<SubscriptionSale> subscriptionSales) {
         this.name = name;
         this.timePeriod = timePeriod;
         this.price = price;
@@ -63,11 +68,11 @@ public class Subscription {
         this.name = name;
     }
 
-    public String getTimePeriod() {
+    public int getTimePeriod() {
         return timePeriod;
     }
 
-    public void setTimePeriod(String timePeriod) {
+    public void setTimePeriod(int timePeriod) {
         this.timePeriod = timePeriod;
     }
 
@@ -87,13 +92,19 @@ public class Subscription {
         this.subscriptionNumber = subscriptionNumber;
     }
 
-    public Service getService_list() {
+    public List<Service> getService_list() {
         return service_list;
     }
 
-    public void setService_list(Service service_list) {
+    public void setService_list(List<Service> service_list) {
         this.service_list = service_list;
     }
 
+    public Collection<SubscriptionSale> getSubscriptionSales() {
+        return subscriptionSales;
+    }
 
+    public void setSubscriptionSales(Collection<SubscriptionSale> subscriptionSales) {
+        this.subscriptionSales = subscriptionSales;
+    }
 }

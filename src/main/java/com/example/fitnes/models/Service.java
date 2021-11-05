@@ -4,6 +4,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 import java.util.Collection;
+import java.util.List;
 
 //Услуга
 @Entity
@@ -17,8 +18,11 @@ public class Service {
     @Size(min = 2,max=1000,message = "Миниму 2 символа, максимум 1000 символов")
     private String name; //Наименование услуги
 
-    @OneToMany(mappedBy = "service_list",fetch = FetchType.EAGER)
-    private Collection<Subscription> subscriptions;
+    @ManyToMany
+    @JoinTable(name = "service_subscription",
+            joinColumns = @JoinColumn(name = "service_id"),
+            inverseJoinColumns = @JoinColumn(name = "subscription_id"))
+    private List<Subscription> subscriptions;
 
     public Service(String name) {
         this.name = name;
@@ -42,11 +46,11 @@ public class Service {
         this.name = name;
     }
 
-    public Collection<Subscription> getSubscriptions() {
+    public List<Subscription> getSubscriptions() {
         return subscriptions;
     }
 
-    public void setSubscriptions(Collection<Subscription> subscriptions) {
+    public void setSubscriptions(List<Subscription> subscriptions) {
         this.subscriptions = subscriptions;
     }
 }

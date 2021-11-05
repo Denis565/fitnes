@@ -1,6 +1,8 @@
 package com.example.fitnes.models;
 
 import javax.persistence.*;
+import javax.validation.constraints.Future;
+import javax.validation.constraints.FutureOrPresent;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 import java.util.Collection;
@@ -16,10 +18,12 @@ public class SubscriptionSale {
 
     @NotEmpty(message = "Данное поле не должно быть пустым")
     @Size(min = 10,max=10,message = "Дата должна быть длиной в 10 символов")
+    @FutureOrPresent(message = "Дата должна быть в будущем")
     private String startDate;
 
     @NotEmpty(message = "Данное поле не должно быть пустым")
     @Size(min = 10,max=10,message = "Дата должна быть длиной в 10 символов")
+    @Future(message = "Дата должна быть в будущем")
     private String endDate;
 
     @ManyToOne(optional = true,cascade = CascadeType.ALL)

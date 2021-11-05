@@ -141,6 +141,11 @@ public class ClientController {
             @PathVariable(value = "id") Long id,
             Model model) {
 
+        if (!clientRepository.existsById(id))
+        {
+            return "redirect:/client/";
+        }
+
         Client clientes = clientRepository.findById(id).orElseThrow();
         client.setSurname(clientes.getSurname());
         client.setName(clientes.getName());

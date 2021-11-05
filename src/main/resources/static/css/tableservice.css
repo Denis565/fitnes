@@ -1,0 +1,43 @@
+.block-left{
+    width:50%;
+    height:800px;
+    overflow:auto;
+    float:left;
+    padding-right: 20px;
+}
+.block-right{
+    width:50%;
+    height:800px;
+    overflow:auto;
+}
+
+/*Список с лева на главном окне*/
+.vertical-list {
+    height:93%;
+    width: 100%;
+    max-height: 93%;
+    min-height: 20%;
+    overflow-y: auto;
+}
+
+/*Стиль для списка элемента a*/
+.vertical-list a {
+    background-color: #dcdcdc;
+    color: black;
+    display: block;
+    padding: 12px;
+    text-decoration: none;
+}
+
+/*Стиль для списка элемента a при наведении*/
+.vertical-list a:hover {
+    background-color: #a09f9f;
+}
+
+/*Стиль для списка элемента a в котром сейчас находимся*/
+.vertical-list a.active {
+    background-color: #c5c5c5;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
