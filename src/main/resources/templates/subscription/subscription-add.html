@@ -7,56 +7,71 @@
 
     <link rel="stylesheet" th:href="@{/css/add.css}" type="text/css">
     <link rel="stylesheet" th:href="@{/css/tableservice.css}" type="text/css">
+    <link rel="stylesheet" th:href="@{/css/table.css}" type="text/css">
 </head>
 <body>
 
 <div th:insert="fragments/header:: header"></div>
 
 <div class="block-left">
-    <form method="post" th:object="${subscription}">
+    <div th:object="${subscription}">
+        <form method="post" >
 
-        <div th:if="${#fields.hasErrors('global')}" th:errors="*{global}" style="color: red">
-            <div th:each="er : ${#fields.errors('global')}" th:text="er${er}"></div>
-        </div>
-        <div th:if="${#fields.hasErrors('name')}" th:errors="*{name}" style="color: red"></div>
-        <input type="text" th:field="*{name}" name="name" placeholder="Название абонимента" class="form-control">
-
-        <div th:if="${#fields.hasErrors('timePeriod')}" th:errors="*{timePeriod}" style="color: red"></div>
-        <input type="number" th:field="*{timePeriod}" name="timePeriod" placeholder="Периуд времени действия абонимента" class="form-control">
-
-        <div th:if="${#fields.hasErrors('price')}" th:errors="*{price}" style="color: red"></div>
-        <input type="number" th:field="*{price}" name="price"  placeholder="Стоимость абонимента" class="form-control">
-
-    </form>
-
-    <form th:action="'/subscription/addService'" method="post" th:object="${service}">
-
-        <div th:if="${#fields.hasErrors('global')}" th:errors="*{global}" style="color: red">
-            <div th:each="er : ${#fields.errors('global')}" th:text="er${er}"></div>
-        </div>
-
-        <select name="idService" class="form-control">
-            <div th:each="el : ${allService}">
-                <option th:value="${el.getId()}" th:text="${el.getName()}"></option>
+            <div th:if="${#fields.hasErrors('global')}" th:errors="*{global}" style="color: red">
+                <div th:each="er : ${#fields.errors('global')}" th:text="er${er}"></div>
             </div>
-        </select>
 
-        <div class="d-grid gap-2 col-6 mx-auto">
-            <button type="submit" class="btn btn-warning">Добавить в абонимент услугу</button>
-        </div>
-    </form>
+            <div th:if="${#fields.hasErrors('subscriptionNumber')}" th:errors="*{subscriptionNumber}" style="color: red"></div>
+            <input type="text" th:field="*{subscriptionNumber}" name="subscriptionNumber" placeholder="Номер абонимента" class="form-control">
+
+            <div th:if="${#fields.hasErrors('name')}" th:errors="*{name}" style="color: red"></div>
+            <input type="text" th:field="*{name}" name="name" placeholder="Название абонимента" class="form-control">
+
+            <div th:if="${#fields.hasErrors('timePeriod')}" th:errors="*{timePeriod}" style="color: red"></div>
+            <input type="number" th:field="*{timePeriod}" name="timePeriod" placeholder="Периуд времени действия абонимента" class="form-control">
+
+            <div th:if="${#fields.hasErrors('price')}" th:errors="*{price}" style="color: red"></div>
+            <input type="number" th:field="*{price}" name="price"  placeholder="Стоимость абонимента" class="form-control">
+
+            <div class="d-grid gap-2 col-6 mx-auto">
+                <button type="submit" class="btn btn-warning">Создать абонимент</button>
+            </div>
+        </form>
+
+        <form th:action="'/subscription/addService'" method="post" th:object="${service}">
+            <select name="idService" class="form-control">
+                <div th:each="el : ${allService}">
+                    <option th:value="${el.getId()}" th:text="${el.getName()}"></option>
+                </div>
+            </select>
+
+            <div class="d-grid gap-2 col-6 mx-auto">
+                <button type="submit" class="btn btn-warning" th:selected="${bol == true}">Добавить в абонимент услугу</button>
+            </div>
+        </form>
+    </div>
 
     </br>
-
-    <form th:action="'/subscription/add'" method="post">
-        <div class="d-grid gap-2 col-6 mx-auto">
-            <button type="submit" class="btn btn-warning">Создать абонимент</button>
-        </div>
-    </form>
 </div>
 
 <div class="block-right">
-    <p>plpe</p>
+    <table>
+        <tr>
+            <th>Название услуги</th>
+        </tr>
+
+        <div th:each="el : ${allServiceSelect}">
+            <tr>
+                <td th:text="${el.getName()}"></td>
+                <td>
+                    <form th:action="'/subscription/subscription-view/'+${el.id}+'/delService'" method="post">
+                        <button type="submit" class="btn btn-warning">Удалить</button>
+                    </form>
+                </td>
+            </tr>
+        </div>
+
+    </table>
 </div>
 
 

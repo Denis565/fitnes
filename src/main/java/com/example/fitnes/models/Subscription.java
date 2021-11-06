@@ -37,17 +37,16 @@ public class Subscription {
     @JoinTable(name = "service_subscription",
             joinColumns = @JoinColumn(name = "subscription_id"),
             inverseJoinColumns = @JoinColumn(name = "service_id"))
-    private List<Service> service_list;
+    private List<Service> service;
 
     @OneToMany(mappedBy = "subscription_list",fetch = FetchType.EAGER)
     private Collection<SubscriptionSale> subscriptionSales;
 
-    public Subscription(String name, int timePeriod, int price, int subscriptionNumber, List<Service> service_list, Collection<SubscriptionSale> subscriptionSales) {
+    public Subscription(String name, int timePeriod, int price, int subscriptionNumber) {
         this.name = name;
         this.timePeriod = timePeriod;
         this.price = price;
         this.subscriptionNumber = subscriptionNumber;
-        this.service_list = service_list;
     }
 
     public Subscription(){}
@@ -93,11 +92,11 @@ public class Subscription {
     }
 
     public List<Service> getService_list() {
-        return service_list;
+        return service;
     }
 
-    public void setService_list(List<Service> service_list) {
-        this.service_list = service_list;
+    public void setService_list(List<Service> service) {
+        this.service = service;
     }
 
     public Collection<SubscriptionSale> getSubscriptionSales() {

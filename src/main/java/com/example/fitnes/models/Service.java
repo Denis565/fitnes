@@ -3,7 +3,6 @@ package com.example.fitnes.models;
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
-import java.util.Collection;
 import java.util.List;
 
 //Услуга
@@ -27,6 +26,12 @@ public class Service {
     public Service(String name) {
         this.name = name;
     }
+
+    /*public Service(Long id,String name,List<Subscription> subscriptions) {
+        this.id = id;
+        this.name = name;
+        this.subscriptions = subscriptions;
+    }*/
 
     public Service(){}
 
