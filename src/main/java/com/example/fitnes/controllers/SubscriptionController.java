@@ -46,7 +46,6 @@ public class SubscriptionController {
     public String subscriptionaddview(Subscription subscription, Service service,Model model) {
         Iterable<Service> ser = serviceRepository.findAll();
         model.addAttribute("allService",ser);
-       // model.addAttribute("allServiceSelect",serviceSelectServ);
         return "subscription/subscription-add";
     }
 

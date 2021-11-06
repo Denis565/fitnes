@@ -42,10 +42,10 @@
 
     <div th:object="${worker}">
         <div th:if="${#fields.hasErrors('login')}" th:errors="*{login}" style="color: red"></div>
-        <input type="tel" th:field="*{login}" name="login" maxlength="50" placeholder="Логин" class="form-control">
+        <input type="text" th:field="*{login}" name="login" maxlength="50" placeholder="Логин" class="form-control">
 
         <div th:if="${#fields.hasErrors('password')}" th:errors="*{password}" style="color: red"></div>
-        <input type="tel" th:field="*{password}" name="password" maxlength="100" placeholder="Пароль" class="form-control">
+        <input type="text" th:field="*{password}" name="password" maxlength="100" placeholder="Пароль" class="form-control">
     </div>
 
     <div class="d-grid gap-2 col-6 mx-auto">

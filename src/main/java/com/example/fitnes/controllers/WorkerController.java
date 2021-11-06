@@ -133,6 +133,8 @@ public class WorkerController {
             Model model)
     {
         Worker workerDelete = workerRepository.findById(id).orElseThrow();
+        workerDelete.setPost_list(null);
+        workerDelete.setEmployee_list(null);
         workerRepository.delete(workerDelete);
         return "redirect:/worker/";
     }

@@ -1,10 +1,10 @@
 package com.example.fitnes.models;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import javax.persistence.*;
-import javax.validation.constraints.Future;
-import javax.validation.constraints.FutureOrPresent;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
+import java.time.LocalDate;
 import java.util.Collection;
 
 //Продажа абонимента
@@ -16,15 +16,14 @@ public class SubscriptionSale {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id; //Код
 
-    @NotEmpty(message = "Данное поле не должно быть пустым")
-    @Size(min = 10,max=10,message = "Дата должна быть длиной в 10 символов")
-    @FutureOrPresent(message = "Дата должна быть в будущем")
-    private String startDate;
+    @NotNull(message = "Поле не должно быть пустым")
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    @FutureOrPresent(message = "Дата должна быть в будущем или настоящем")
+    private LocalDate startDate;
 
-    @NotEmpty(message = "Данное поле не должно быть пустым")
-    @Size(min = 10,max=10,message = "Дата должна быть длиной в 10 символов")
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     @Future(message = "Дата должна быть в будущем")
-    private String endDate;
+    private LocalDate endDate;
 
     @ManyToOne(optional = true,cascade = CascadeType.ALL)
     private Subscription subscription_list;
@@ -32,8 +31,7 @@ public class SubscriptionSale {
     @ManyToOne(optional = true,cascade = CascadeType.ALL)
     private Client client_list;
 
-
-    public SubscriptionSale(String startDate, String endDate, Subscription subscription_list, Client client_list) {
+    public SubscriptionSale(LocalDate startDate, LocalDate endDate, Subscription subscription_list, Client client_list) {
         this.startDate = startDate;
         this.endDate = endDate;
         this.subscription_list = subscription_list;
@@ -50,19 +48,19 @@ public class SubscriptionSale {
         this.id = id;
     }
 
-    public String getStartDate() {
+    public LocalDate getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(String startDate) {
+    public void setStartDate(LocalDate startDate) {
         this.startDate = startDate;
     }
 
-    public String getEndDate() {
+    public LocalDate getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(String endDate) {
+    public void setEndDate(LocalDate endDate) {
         this.endDate = endDate;
     }
 

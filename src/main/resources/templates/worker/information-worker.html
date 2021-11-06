@@ -34,7 +34,7 @@
             <td th:text="${el.getEmployee_list().getName()}"></td>
             <td th:text="${el.getEmployee_list().getPatronymic()}"></td>
             <td th:text="${el.getPost_list().getName()}"></td>
-            <td th:text="${#temporals.format(el.getEmployee_list().getDateBirth(), 'dd-MM-yyyy')}"></td>
+            <td th:text="${#temporals.format(el.getEmployee_list().getDateBirth(), 'dd.MM.yyyy')}"></td>
             <td th:text="${el.getEmployee_list().getPlaceResidence()}"></td>
             <td th:text="${el.getEmployee_list().getGender()}"></td>
             <td th:text="${el.getEmployee_list().getPassport().getSeries()}"></td>

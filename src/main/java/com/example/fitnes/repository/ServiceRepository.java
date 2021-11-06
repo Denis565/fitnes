@@ -16,7 +16,4 @@ public interface ServiceRepository extends CrudRepository<Service,Long> {
 
     @Query(value = "SELECT service_id FROM service_subscription WHERE subscription_id = ?1 and service_id = ?2", nativeQuery = true)
     Long findByIDSubscriptionIDService(Long idSubscroption,Long idService);
-
-   /* @Query(value = "SELECT service.name FROM service INNER JOIN service_subscription on service_id = service.id WHERE subscription_id = ?1",nativeQuery = true)
-    ArrayList<String> findByIDSubscriptionName (Long isSubscription);*/
 }
