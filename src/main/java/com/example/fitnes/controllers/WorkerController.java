@@ -35,6 +35,8 @@ public class WorkerController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    Long idPhone;
+
     @GetMapping("/")
     public String workerview(Model model){
         Iterable<Worker> workers = workerRepository.findAll();
@@ -155,6 +157,7 @@ public class WorkerController {
         phone.setHomePhone(ph.getHomePhone());
         phone.setAdditionalPhone(ph.getAdditionalPhone());
         phone.setMainPhone(ph.getMainPhone());
+        idPhone = ph.getId();
 
         Employee employeers = employeeRepository.findById(work.getEmployee_list().getId()).orElseThrow();
         Post post = postRepository.findById(work.getPost_list().getId()).orElseThrow();
@@ -223,23 +226,19 @@ public class WorkerController {
             return "worker/edit-worker";
         }
 
-        if (phones_list == null) {
-            phoneRepository.save(phone);
-        }else {
-            phone = phones_list;
-        }
+        phone.setId(idPhone);
 
         worker.setEmployee_list(employeeRepository.findById(idEmployee).orElseThrow());
         worker.setPost_list(postRepository.findById(idPost).orElseThrow());
         worker.setActive(true);
         worker.setRoles(Collections.singleton(Role.USER));
-
         if (worker.getPassword() == null) {
             worker.setPassword(workerRepository.findById(id).orElseThrow().getPassword());
         }else {
             worker.setPassword(passwordEncoder.encode(worker.getPassword()));
         }
         worker.setPhone_list(phone);
+        phoneRepository.save(phone);
         workerRepository.save(worker);
         return "redirect:/worker/";
     }

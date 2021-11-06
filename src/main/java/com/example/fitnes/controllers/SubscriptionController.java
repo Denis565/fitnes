@@ -25,10 +25,6 @@ public class SubscriptionController {
     @Autowired
     private ServiceRepository serviceRepository;
 
-    ArrayList<Long> idserviceSelect = new ArrayList<Long>();
-    ArrayList<Service> serviceSelectServ = new ArrayList<Service>();
-
-
     @GetMapping("/")
     public String subscriptionview(Model model){
         Iterable<Subscription> subscriptions = subscriptionRepository.findAll();
@@ -80,12 +76,6 @@ public class SubscriptionController {
             errorsB = false;
         }
 
-        /*if (serviceSelectServ.size() == 0){
-            ObjectError error = new ObjectError("name","Вы должны выбрать услуги для абонимента.");
-            bindingResult.addError(error);
-            errorsB = false;
-        }*/
-
         if (!errorsB){
             Iterable<Service> ser = serviceRepository.findAll();
             model.addAttribute("allService",ser);
@@ -94,12 +84,6 @@ public class SubscriptionController {
         }
 
         subscriptionRepository.save(subscription);
-       /* for (Service i : serviceSelectServ){
-            serviceRepository.findById(i.getId()).orElseThrow().getSubscriptions().add(subscription);
-        }
-
-        subscriptionRepository.save(subscription);*/
-
         return "redirect:/subscription/";
     }
 
@@ -196,9 +180,7 @@ public class SubscriptionController {
 
     @GetMapping("/subscription-information/{id}")
     public String viewinformationworker(@PathVariable(value = "id") Long id, Model model) {
-
         ArrayList<Service> allServiceSelected = serviceRepository.findByIDSubscription(id);
-
         Optional<Subscription> subscription = subscriptionRepository.findById(id);
         ArrayList<Subscription> res = new ArrayList<>();
         subscription.ifPresent(res::add);

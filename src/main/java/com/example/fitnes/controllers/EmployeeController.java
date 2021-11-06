@@ -33,6 +33,8 @@ public class EmployeeController {
     @Autowired
     private PassportRepository passportRepository;
 
+    Long idPassport;
+
     @GetMapping("/add")
     public String addemployeeview(Employee employee,Passport passport, Model model) {
         return "employee/employee-add";
@@ -113,10 +115,12 @@ public class EmployeeController {
         employee.setDateBirth(emp.getDateBirth());
         employee.setPlaceResidence(emp.getPlaceResidence());
         employee.setGender(emp.getGender());
+        employee.setId(emp.getId());
 
         Passport pass = passportRepository.findById(emp.getPassport().getId()).orElseThrow();
         passport.setNumber(pass.getNumber());
         passport.setSeries(pass.getSeries());
+        idPassport = pass.getId();
 
         model.addAttribute("genderselected", employee.getGender());
 
@@ -165,13 +169,8 @@ public class EmployeeController {
             model.addAttribute("genderselected", employee.getGender());
             return "employee/edit-employee";
         }
-
-        if (passNumber == null) {
-            employee.setPassport(passport);
-        }else {
-            passport = passNumber;
-        }
-
+        passport.setId(idPassport);
+        employee.setPassport(passport);
         passportRepository.save(passport);
         employeeRepository.save(employee);
         return "redirect:/";

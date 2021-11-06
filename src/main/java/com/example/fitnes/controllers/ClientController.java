@@ -20,25 +20,16 @@ import javax.validation.Valid;
 public class ClientController {
 
     @Autowired
-    private WorkerRepository workerRepository;
-
-    @Autowired
-    private EmployeeRepository employeeRepository;
-
-    @Autowired
-    private PostRepository postRepository;
-
-    @Autowired
     private PhoneRepository phoneRepository;
 
     @Autowired
     private PassportRepository passportRepository;
 
     @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    @Autowired
     private ClientRepository clientRepository;
+
+    Long idPassport;
+    Long idPhone;
 
     @GetMapping("/")
     public String clientview(Model model){
@@ -158,10 +149,12 @@ public class ClientController {
         phone.setHomePhone(ph.getHomePhone());
         phone.setAdditionalPhone(ph.getAdditionalPhone());
         phone.setMainPhone(ph.getMainPhone());
+        idPhone = ph.getId();
 
         Passport pass = passportRepository.findById(clientes.getPassport().getId()).orElseThrow();
         passport.setNumber(pass.getNumber());
         passport.setSeries(pass.getSeries());
+        idPassport = pass.getId();
 
         model.addAttribute("genderselected", client.getGender());
 
@@ -205,13 +198,10 @@ public class ClientController {
 
         if(phones_list != null){
             if (!clientRepository.findById(id).orElseThrow().getPhone().getId().equals(phones_list.getId())) {
-                // Client clientSearch = clientRepository.findByPhonelist(phones_list.getId());//переделать
-                // if (clientSearch == null){//не найден
                 ObjectError error = new ObjectError("additionalPhone", "Такой телефон уже есть в базе");
                 bindingResult.addError(error);
                 errorsB = false;
             }
-            // }
         }
 
         if (client.getWeight().equals("0.0")){
@@ -243,18 +233,12 @@ public class ClientController {
             return "client/client-add";
         }
 
-        if (passSeries ==null && passNumber==null) {
-            passportRepository.save(passport);
-        }else {
-            passport = passNumber;
-        }
+        passport.setId(idPassport);
+        phone.setId(idPhone);
         client.setPassport(passport);
-        if (phones_list == null) {
-            phoneRepository.save(phone);
-        }else {
-            phone = phones_list;
-        }
         client.setPhone(phone);
+        phoneRepository.save(phone);
+        passportRepository.save(passport);
         clientRepository.save(client);
 
         return "redirect:/client/";
