@@ -6,3 +6,11 @@ th,td{
     padding-left: 20px;
     padding-right: 20px;
 }
+
+table{
+    margin-right: 40px;
+}
+
+.div-margin{
+    padding: 20px;
+}

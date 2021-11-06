@@ -96,10 +96,16 @@ public class WorkerController {
         }
 
         if (!errorsB){
+
+            Employee employeers = employeeRepository.findById(idEmployee).orElseThrow();
+            Post post = postRepository.findById(idPost).orElseThrow();
+
             Iterable<Employee> emp = employeeRepository.findAll();
             Iterable<Post> posts = postRepository.findAll();
             model.addAttribute("allEmployee",emp);
             model.addAttribute("allPost",posts);
+            model.addAttribute("employeeselected", employeers.getPassport().getId());
+            model.addAttribute("postselected", post.getName());
             return "worker/worker-add";
         }
 
@@ -214,7 +220,7 @@ public class WorkerController {
             model.addAttribute("allPost",posts);
             model.addAttribute("employeeselected", employeers.getPassport().getId());
             model.addAttribute("postselected", post.getName());
-            return "worker/worker-add";
+            return "worker/edit-worker";
         }
 
         if (phones_list == null) {

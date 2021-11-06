@@ -30,8 +30,8 @@
     <input type="text" th:field="*{placeResidence}" name="placeResidence" placeholder="Место рождения" class="form-control">
 
     <select name="gender" class="form-control">
-            <option value="Мужской">Мужской</option>
-            <option value="Женский">Женский</option>
+            <option value="Мужской" th:selected="${genderselected == 'Мужской' }">Мужской</option>
+            <option value="Женский" th:selected="${genderselected == 'Женский' }">Женский</option>
     </select>
 
     <div th:object="${passport}">

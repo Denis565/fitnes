@@ -121,6 +121,7 @@ public class ClientController {
         }
 
         if (!errorsB){
+            model.addAttribute("genderselected", client.getGender());
             return "client/client-add";
         }
 
@@ -238,6 +239,7 @@ public class ClientController {
         }
 
         if (!errorsB){
+            model.addAttribute("genderselected", client.getGender());
             return "client/client-add";
         }
 

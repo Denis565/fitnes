@@ -71,6 +71,7 @@ public class EmployeeController {
         }
 
         if(!errorsB){
+            model.addAttribute("genderselected", employee.getGender());
             return "employee/employee-add";
         }
 
@@ -161,6 +162,7 @@ public class EmployeeController {
         }
 
         if(!errorsB){
+            model.addAttribute("genderselected", employee.getGender());
             return "employee/edit-employee";
         }
 

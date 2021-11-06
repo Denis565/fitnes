@@ -15,7 +15,8 @@
 
         <select name="idEmployee" class="form-control">
             <div th:each="el : ${allEmployee}">
-                <option th:value="${el.id}" th:text="${el.getSurname()} +'.'+${el.name}+'.'+${el.getPatronymic()}+'.'"></option>
+                <option th:value="${el.id}" th:text="${el.getSurname()} +'.'+${el.name}+'.'+${el.getPatronymic()}+'.'"
+                        th:selected="${el.getPassport().getId() == employeeselected}"></option>
             </div>
         </select>
 
@@ -35,7 +36,7 @@
 
     <select name="idPost" class="form-control">
         <div th:each="el : ${allPost}">
-            <option th:value="${el.id}" th:text="${el.getName()}"></option>
+            <option th:value="${el.id}" th:text="${el.getName()}" th:selected="${el.getName() == postselected}"></option>
         </div>
     </select>
 

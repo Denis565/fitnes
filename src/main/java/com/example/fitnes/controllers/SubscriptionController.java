@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/subscription")
@@ -49,7 +50,7 @@ public class SubscriptionController {
     public String subscriptionaddview(Subscription subscription, Service service,Model model) {
         Iterable<Service> ser = serviceRepository.findAll();
         model.addAttribute("allService",ser);
-        model.addAttribute("allServiceSelect",serviceSelectServ);
+       // model.addAttribute("allServiceSelect",serviceSelectServ);
         return "subscription/subscription-add";
     }
 
@@ -79,22 +80,79 @@ public class SubscriptionController {
             errorsB = false;
         }
 
-        if (serviceSelectServ.size() == 0){
+        /*if (serviceSelectServ.size() == 0){
             ObjectError error = new ObjectError("name","Вы должны выбрать услуги для абонимента.");
+            bindingResult.addError(error);
+            errorsB = false;
+        }*/
+
+        if (!errorsB){
+            Iterable<Service> ser = serviceRepository.findAll();
+            model.addAttribute("allService",ser);
+           // model.addAttribute("allServiceSelect",serviceSelectServ);
+            return "subscription/subscription-add";
+        }
+
+        subscriptionRepository.save(subscription);
+       /* for (Service i : serviceSelectServ){
+            serviceRepository.findById(i.getId()).orElseThrow().getSubscriptions().add(subscription);
+        }
+
+        subscriptionRepository.save(subscription);*/
+
+        return "redirect:/subscription/";
+    }
+
+    @GetMapping("/subscription-view/{id}/edit")
+    public String editsubscriptionview(
+            Subscription subscription,
+            @PathVariable(value = "id") Long id,
+            Model model)
+    {
+        if (!subscriptionRepository.existsById(id))
+        {
+            return "redirect:/subscription/";
+        }
+
+        Subscription sub = subscriptionRepository.findById(id).orElseThrow();
+        subscription.setSubscriptionNumber(sub.getSubscriptionNumber());
+        subscription.setName(sub.getName());
+        subscription.setTimePeriod(sub.getTimePeriod());
+        subscription.setPrice(sub.getPrice());
+
+        return "subscription/edit-subscription";
+    }
+
+    @PostMapping("/subscription-view/{id}/edit")
+    public String editsubscription(
+            @Valid Subscription subscription,
+            BindingResult bindingResult,
+            @PathVariable(value = "id") Long id,
+            Model model)
+    {
+        boolean errorsB = true;
+
+        if (bindingResult.hasErrors()){
+            errorsB = false;
+        }
+
+        Subscription subNumber = subscriptionRepository.findBySubscriptionNumber(subscription.getSubscriptionNumber());
+        Subscription subName =subscriptionRepository.findByName(subscription.getName());
+
+        if (subNumber != null && !subNumber.getId().equals(subscriptionRepository.findById(id).orElseThrow().getId())){
+            ObjectError error = new ObjectError("subscriptionNumber","Такой номер абанимента уже существует..");
+            bindingResult.addError(error);
+            errorsB = false;
+        }
+
+        if (subName != null && !subName.getId().equals(subscriptionRepository.findById(id).orElseThrow().getId())){
+            ObjectError error = new ObjectError("name","Такое название абонимента уже существует.");
             bindingResult.addError(error);
             errorsB = false;
         }
 
         if (!errorsB){
-            Iterable<Service> ser = serviceRepository.findAll();
-            model.addAttribute("allService",ser);
-            model.addAttribute("allServiceSelect",serviceSelectServ);
-            return "subscription/subscription-add";
-        }
-
-        subscriptionRepository.save(subscription);
-        for (Service i : serviceSelectServ){
-            serviceRepository.findById(i.getId()).orElseThrow().getSubscriptions().add(subscription);
+            return "subscription/edit-subscription";
         }
 
         subscriptionRepository.save(subscription);
@@ -102,27 +160,52 @@ public class SubscriptionController {
         return "redirect:/subscription/";
     }
 
-    @PostMapping("/addService")
-    public String subscriptionaddserviceview(@RequestParam Long idService,  @Valid Subscription subscription,
-                                             BindingResult bindingResult, Model model) {
-
-        if (!idserviceSelect.contains(idService)){
-            String nameService = serviceRepository.findById(idService).orElseThrow().getName();
-            idserviceSelect.add(idService);
-            //serviceSelectServ.add(new Service(idService,nameService,null));
-            serviceSelectServ.add(serviceRepository.findById(idService).orElseThrow());
-        }
-        return "redirect:/subscription/add";
+    @GetMapping("/addService/{id}")
+    public String subscriptionaddserviceview(@PathVariable(value = "id") Long id,Model model) {
+        ArrayList<Service> servic = serviceRepository.findByIDSubscription(id);
+        model.addAttribute("allServiceSelect",servic);
+        Iterable<Service> ser = serviceRepository.findAll();
+        model.addAttribute("allService",ser);
+        model.addAttribute("namesubscription",subscriptionRepository.findById(id).orElseThrow().getName());
+        model.addAttribute("idscription",id);
+        return "subscription/subscription-service-add";
     }
 
-    @PostMapping("subscription-view/{id}/delService")
+    @PostMapping("/addService/{id}")
+    public String subscriptionaddservice(@RequestParam Long idService,@PathVariable(value = "id") Long id,Model model) {
+
+        if (serviceRepository.findByIDSubscriptionIDService(id,idService) == null) {
+            Subscription sub = subscriptionRepository.findById(id).orElseThrow();
+            serviceRepository.findById(idService).orElseThrow().getSubscriptions().add(sub);
+            subscriptionRepository.save(sub);
+        }
+        return "redirect:/subscription/addService/"+id;
+    }
+
+    @PostMapping("subscription-view/{idService}/delService/{idSubscription}")
     public String deleteemployee(
-            @PathVariable(value = "id") Long id,
+            @PathVariable(value = "idService") Long idService,
+            @PathVariable(value = "idSubscription") Long idSubscription,
             Model model)
     {
-        serviceSelectServ.remove(idserviceSelect.indexOf(id));
-        idserviceSelect.remove(id);
-        return "redirect:/subscription/add";
+        Subscription sub = subscriptionRepository.findById(idSubscription).orElseThrow();
+        serviceRepository.findById(idService).orElseThrow().getSubscriptions().remove(sub);
+        subscriptionRepository.save(sub);
+        return "redirect:/subscription/addService/"+idSubscription;
+    }
+
+    @GetMapping("/subscription-information/{id}")
+    public String viewinformationworker(@PathVariable(value = "id") Long id, Model model) {
+
+        ArrayList<Service> allServiceSelected = serviceRepository.findByIDSubscription(id);
+
+        Optional<Subscription> subscription = subscriptionRepository.findById(id);
+        ArrayList<Subscription> res = new ArrayList<>();
+        subscription.ifPresent(res::add);
+
+        model.addAttribute("onesubscription",res);
+        model.addAttribute("allService",allServiceSelected);
+        return "subscription/information-subscription";
     }
 
 

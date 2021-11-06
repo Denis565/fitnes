@@ -32,12 +32,12 @@
             <td th:text="${el.getPost_list().getName()}"></td>
             <td th:text="${el.getPhone_list().getMainPhone()}"></td>
             <td><a th:href="'/worker/worker-view/'+${el.id}+'/edit'" class="btn btn-info">Редактировать</a></td>
+            <td><a th:href="'/worker/worker-information/'+${el.id}" class="btn btn-info">Детальнее</a></td>
             <td>
                 <form th:action="'/worker/worker-view/'+${el.id}+'/del'" method="post">
                     <button type="submit" class="btn btn-warning">Удалить</button>
                 </form>
             </td>
-            <td><a th:href="'/worker/worker-information/'+${el.id}" class="btn btn-info">Детальнее</a></td>
         </tr>
     </div>
 

@@ -26,8 +26,8 @@
     <input type="text" th:field="*{weight}" name="weight"  placeholder="Вес" class="form-control" >
 
     <select name="gender" class="form-control">
-        <option value="Мужской" th:selected="${'Мужской' == genderselected }">Мужской</option>
-        <option value="Женский" th:selected="${'Женский' == genderselected }">Женский</option>
+        <option value="Мужской" th:selected="${genderselected == 'Мужской' }">Мужской</option>
+        <option value="Женский" th:selected="${genderselected == 'Женский' }">Женский</option>
     </select>
 
 
