@@ -75,7 +75,7 @@ public class SubscriptionSaleController {
 
         if (subscriptionSalesArray.size() != 0){
             for (SubscriptionSale subS : subscriptionSalesArray ){
-                if (subS.getEndDate().isAfter(startDaySelected)){
+                if (subS.getEndDate().isAfter(startDaySelected) || subS.getEndDate().equals(startDaySelected)){
                     ObjectError error = new ObjectError("startDate", "У вас есть незаконченный такой абонимент.Выберете другую дату начала абонимента");
                     bindingResult.addError(error);
                     init(model, idClient, idSubscription);
