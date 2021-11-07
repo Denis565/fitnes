@@ -11,17 +11,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
-import java.util.Objects;
+import java.util.*;
 
 @Controller
 @RequestMapping("/employee")
@@ -32,6 +27,9 @@ public class EmployeeController {
 
     @Autowired
     private PassportRepository passportRepository;
+
+    @Autowired
+    private WorkerRepository workerRepository;
 
     Long idPassport;
 
@@ -91,8 +89,10 @@ public class EmployeeController {
     {
         Employee employeeDelete = employeeRepository.findById(id).orElseThrow();
         Passport passport = passportRepository.findById(employeeDelete.getPassport().getId()).orElseThrow();
-        employeeRepository.delete(employeeDelete);
+        employeeDelete.setWorkers(null);
+        employeeDelete.setPassport(null);
         passportRepository.delete(passport);
+        employeeRepository.delete(employeeDelete);
         return "redirect:/";
     }
 
@@ -174,5 +174,13 @@ public class EmployeeController {
         passportRepository.save(passport);
         employeeRepository.save(employee);
         return "redirect:/";
+    }
+
+    @PostMapping("/filter")
+    public String filteremployee(@RequestParam("namesurname") String surname,@Valid Employee employee, BindingResult bindingResult, Model model)
+    {
+        List<Employee> result = employeeRepository.findBySurnameContaining(surname);
+        model.addAttribute("allEmployee", result);
+        return "employee/employee-view";
     }
 }

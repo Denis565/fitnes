@@ -8,15 +8,10 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
-
-import javax.persistence.Entity;
 import javax.validation.Valid;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Locale;
 
 @Controller
 @RequestMapping("/trainingschedule")
@@ -59,6 +54,7 @@ public class TrainingScheduleController {
             Model model){
 
         boolean erorsB = true;
+
         if (bindingResult.hasErrors()) {
             init(model, idSubscriptionSale, idWorker);
             return "trainingschedule/trainingschedule-add";
@@ -80,34 +76,10 @@ public class TrainingScheduleController {
 
         assert timeStartSelected != null;
         assert timeEndSelected != null;
-        if ((localmax.isBefore(timeStartSelected) || localmin.isAfter(timeStartSelected)) || (localmax.isBefore(timeEndSelected) || localmin.isAfter(timeEndSelected))){
-            ObjectError error = new ObjectError("startTime", "Время для тренеровок с 10:00 по 22:00");
-            bindingResult.addError(error);
-            erorsB = false;
-        }
-
-        if (timeEndSelected.isBefore(timeStartSelected)){
-            ObjectError error = new ObjectError("startTime", "Время начала должно быть меньше времени окончания тренеровки.");
-            bindingResult.addError(error);
-            erorsB = false;
-        }
 
         SubscriptionSale subscriptionSale = subscriptionSaleRepository.findById(idSubscriptionSale).orElseThrow();
 
-        if (trainingSchedule.getDate().isAfter(subscriptionSale.getEndDate())){
-            String formatDate = subscriptionSale.getEndDate().format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
-            ObjectError error = new ObjectError("startTime", "Вы не можете создать запись на этот день, так как ваш абонимент действует до "+ formatDate);
-            bindingResult.addError(error);
-            erorsB = false;
-        }
-
-        if (erorsB && timeStartSelected.plusHours(1).isAfter(timeEndSelected)){
-            ObjectError error = new ObjectError("startTime", "Минимальное время индивидуальной тренеровки 1 час.");
-            bindingResult.addError(error);
-            erorsB = false;
-        }
-
-        if (!erorsB){
+        if (!checkErrors(localmax,localmin,timeStartSelected,timeEndSelected,trainingSchedule,subscriptionSale,bindingResult,erorsB)){
             init(model, idSubscriptionSale, idWorker);
             return "trainingschedule/trainingschedule-add";
         }
@@ -175,7 +147,7 @@ public class TrainingScheduleController {
 
         if (bindingResult.hasErrors()) {
             init(model, idSubscriptionSale, idWorker);
-            return "trainingschedule/trainingschedule-add";
+            return "trainingschedule/edit-trainingschedule";
         }
 
         LocalTime timeStartSelected = trainingSchedule.getStartTime();
@@ -194,6 +166,26 @@ public class TrainingScheduleController {
 
         assert timeStartSelected != null;
         assert timeEndSelected != null;
+
+        SubscriptionSale subscriptionSale = subscriptionSaleRepository.findById(idSubscriptionSale).orElseThrow();
+
+        if (!checkErrors(localmax,localmin,timeStartSelected,timeEndSelected,trainingSchedule,subscriptionSale,bindingResult,erorsB)){
+            init(model, idSubscriptionSale, idWorker);
+            return "trainingschedule/trainingschedule-add";
+        }
+
+        trainingSchedule.setSubscriptionSale_list(subscriptionSale);
+        trainingSchedule.setWork_list(workerRepository.findById(idWorker).orElseThrow());
+        trainingScheduleRepository.save(trainingSchedule);
+        return "redirect:/trainingschedule/";
+    }
+
+    private boolean checkErrors(
+            LocalTime localmax, LocalTime localmin,
+            LocalTime timeStartSelected, LocalTime timeEndSelected,
+            TrainingSchedule trainingSchedule, SubscriptionSale subscriptionSale,
+            BindingResult bindingResult, boolean erorsB
+    ){
         if ((localmax.isBefore(timeStartSelected) || localmin.isAfter(timeStartSelected)) || (localmax.isBefore(timeEndSelected) || localmin.isAfter(timeEndSelected))){
             ObjectError error = new ObjectError("startTime", "Время для тренеровок с 10:00 по 22:00");
             bindingResult.addError(error);
@@ -205,8 +197,6 @@ public class TrainingScheduleController {
             bindingResult.addError(error);
             erorsB = false;
         }
-
-        SubscriptionSale subscriptionSale = subscriptionSaleRepository.findById(idSubscriptionSale).orElseThrow();
 
         if (trainingSchedule.getDate().isAfter(subscriptionSale.getEndDate())){
             String formatDate = subscriptionSale.getEndDate().format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
@@ -221,28 +211,6 @@ public class TrainingScheduleController {
             erorsB = false;
         }
 
-        if (!erorsB){
-            init(model, idSubscriptionSale, idWorker);
-            return "trainingschedule/trainingschedule-add";
-        }
-
-        trainingSchedule.setSubscriptionSale_list(subscriptionSale);
-        trainingSchedule.setWork_list(workerRepository.findById(idWorker).orElseThrow());
-        trainingScheduleRepository.save(trainingSchedule);
-        return "redirect:/trainingschedule/";
+        return erorsB;
     }
-
-    private boolean checkErrors(){
-        boolean errorsB = true;
-
-        return errorsB;
-    }
-    /*private static boolean dateRangesAreOverlaping(LocalTime start1, LocalTime end1, LocalTime start2, LocalTime end2) {
-        return (((end1 == null) || (start2 == null) || end1.isAfter(start2)) &&
-                ((start1 == null) || (end2 == null) || start1.isBefore(end2)));
-    }
-
-    private static boolean timerange(LocalTime start1, LocalTime end1, LocalTime start2, LocalTime end2){
-        return (start1.isBefore(end2) || start1.equals(end2)) && (start2.isBefore(end1) || start2.equals(end1));
-    }*/
 }

@@ -12,6 +12,15 @@
 
     <a href="/employee/add">Добавить сотрудника</a>
 
+    <form method="post" th:action="'/employee/filter'" class="div-input-search">
+        <div class="input-group mb-3">
+            <input type="text" name="namesurname" class="form-control" aria-describedby="button-addon2" placeholder="Введите начало фамилии сотрудника">
+            <div class="input-group-append">
+                <button class="btn btn-outline-secondary" type="submit" id="button-addon2">Поиск</button>
+            </div>
+        </div>
+    </form>
+
     <table>
         <colgroup>
             <col span="6" style="background:Khaki">

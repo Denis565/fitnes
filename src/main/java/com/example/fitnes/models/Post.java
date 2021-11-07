@@ -4,6 +4,7 @@ import javax.persistence.*;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.util.Collection;
 import java.util.List;
 
@@ -18,8 +19,8 @@ public class Post {
     @NotEmpty(message = "Данное поле не должно быть пустым")
     private String name;
 
-    @NotEmpty(message = "Данное поле не должно быть пустым")
-    @Min(value = 4000 ,message = "Минимальная зарплата 10000 рублей" )
+    @NotNull(message = "Данное поле не должно быть пустым")
+    @Min(value = 10000 ,message = "Минимальная зарплата 10000 рублей" )
     @Max(value = 1000000 ,message = "Максимальная зарплата 1000000 рублей" )
     private int salary;
 
