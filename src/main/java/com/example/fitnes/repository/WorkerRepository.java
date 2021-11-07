@@ -13,4 +13,7 @@ public interface WorkerRepository extends CrudRepository<Worker,Long> {
 
     @Query(value = "SELECT * FROM `worker` WHERE phone_list_id = ?1 and employee_list_id = ?2", nativeQuery = true)
     Worker findByPhonelistAndEmployeelist(Long idphone,Long idemployee);
+
+    @Query(value = "SELECT * FROM `worker`INNER JOIN post on post_list_id = post.id WHERE post.name = 'Тренер'",nativeQuery = true)
+    Iterable<Worker> findByPostCoach();
 }

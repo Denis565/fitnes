@@ -15,16 +15,19 @@
 
 <h1 th:text="${namesubscription}" align="center" style="color: green"></h1>
 
-<form method="post" th:object="${subscriptionSale}">
+<form method="post" th:object="${trainingSchedule}">
+
+    <p>ФИО клиента </p>
     <select name="idClient" class="form-control">
         <div th:each="el : ${allClient}">
             <option th:value="${el.id}" th:text="${el.getSurname()} +'.'+${el.getName()}+'.'+${el.getPatronymic()}+'.'" th:selected="${el.getId() == idClientSelected}"></option>
         </div>
     </select>
 
-    <select name="idSubscription" class="form-control">
-        <div th:each="el : ${allsubscription}">
-            <option th:value="${el.id}" th:text="${el.getName()}" th:selected="${el.getId() == idSubscriptionSelect}"></option>
+    <p>ФИО тренера </p>
+    <select name="idWorker" class="form-control">
+        <div th:each="el : ${allWorker}">
+            <option th:value="${el.id}" th:text="${el.getEmployee_list().getSurname()} +'.'+${el.getEmployee_list().getName()}+'.'+${el.getEmployee_list().getPatronymic()}+'.'" th:selected="${el.getId() == idWorkerSelect}"></option>
         </div>
     </select>
 
@@ -32,11 +35,17 @@
         <div th:each="er : ${#fields.errors('global')}" th:text="er${er}"></div>
     </div>
 
-    <div th:if="${#fields.hasErrors('startDate')}" th:errors="*{startDate}" style="color: red"></div>
-    <input type="date" th:field="*{startDate}" name="startDate"  placeholder="Дата рождения" class="form-control" >
+    <div th:if="${#fields.hasErrors('date')}" th:errors="*{date}" style="color: red"></div>
+    <input type="date" th:field="*{date}" name="date"  placeholder="Дата тренеровки" class="form-control" >
+
+    <div th:if="${#fields.hasErrors('startTime')}" th:errors="*{startTime}" style="color: red"></div>
+    <input type="time" th:field="*{startTime}" name="startTime"  placeholder="Дата тренеровки" class="form-control" min="10:00" max="22:00">
+
+    <div th:if="${#fields.hasErrors('endTime')}" th:errors="*{endTime}" style="color: red"></div>
+    <input type="time" th:field="*{endTime}" name="endTime"  placeholder="Дата тренеровки" class="form-control" min="10:00" max="22:00">
 
     <div class="d-grid gap-2 col-6 mx-auto">
-        <button type="submit" class="btn btn-warning">Присвоить клиенту абонимент</button>
+        <button type="submit" class="btn btn-warning">Создать графиик</button>
     </div>
 </form>
 

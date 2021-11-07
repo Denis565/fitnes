@@ -19,6 +19,7 @@
     <tr>
         <th>ФИО тренера</th>
         <th>ФИО клиента</th>
+        <th>Название абонимента</th>
         <th>Дата</th>
         <th>Время начала</th>
         <th>Время окончания</th>
@@ -30,6 +31,7 @@
             <td th:text="${el.getSubscriptionSale_list().getClient_list().getSurname()} +'.'
                 +${el.getSubscriptionSale_list().getClient_list().name}+'.'
                 +${el.getSubscriptionSale_list().getClient_list().getPatronymic()}+'.'"></td>
+            <td th:text="${el.getSubscriptionSale_list().getSubscription_list().getName()}"></td>
             <td th:text="${el.getDate()}"></td>
             <td th:text="${el.getStartTime()}"></td>
             <td th:text="${el.getEndTime()}"></td>
