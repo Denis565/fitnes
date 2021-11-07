@@ -38,6 +38,7 @@ public class SubscriptionController {
             Model model)
     {
         Subscription subscription = subscriptionRepository.findById(id).orElseThrow();
+        subscription.setService_list(null);
         subscriptionRepository.delete(subscription);
         return "redirect:/subscription/";
     }

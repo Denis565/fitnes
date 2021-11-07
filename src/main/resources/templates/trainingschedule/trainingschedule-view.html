@@ -32,11 +32,11 @@
                 +${el.getSubscriptionSale_list().getClient_list().name}+'.'
                 +${el.getSubscriptionSale_list().getClient_list().getPatronymic()}+'.'"></td>
             <td th:text="${el.getSubscriptionSale_list().getSubscription_list().getName()}"></td>
-            <td th:text="${el.getDate()}"></td>
+            <td th:text="${#temporals.format(el.getDate(), 'dd.MM.yyyy')}"></td>
             <td th:text="${el.getStartTime()}"></td>
             <td th:text="${el.getEndTime()}"></td>
 
-            <td><a th:href="'/trainingschedule/subscription-view/'+${el.id}+'/edit'" class="btn btn-info">Изменить граффик</a></td>
+            <td><a th:href="'/trainingschedule/trainingschedule-view/'+${el.id}+'/edit'" class="btn btn-info">Изменить граффик</a></td>
             <td>
                 <form th:action="'/trainingschedule/trainingschedule-view/'+${el.id}+'/del'" method="post">
                     <button type="submit" class="btn btn-warning">Удалить</button>

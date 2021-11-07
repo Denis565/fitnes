@@ -41,6 +41,7 @@ public class SubscriptionSaleController {
     {
         SubscriptionSale subscriptionSale = subscriptionSaleRepository.findById(id).orElseThrow();
         subscriptionSale.setClient_list(null);
+        subscriptionSale.setSubscription_list(null);
         subscriptionSaleRepository.delete(subscriptionSale);
         return "redirect:/subscriptionsale/";
     }
