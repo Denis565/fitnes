@@ -182,7 +182,7 @@ public class TrainingScheduleController {
         LocalTime timeEndSelected = trainingSchedule.getEndTime();
 
         if (timeStartSelected != null && timeEndSelected != null) {
-            if (trainingScheduleRepository.findByTimeRangesAreOverlaping(timeStartSelected.toString(), timeEndSelected.toString(),trainingSchedule.getDate().toString(),idWorker).size() != 0) {
+            if (trainingScheduleRepository.findByTimeRangesAreOverlapingUpdate(timeStartSelected.toString(), timeEndSelected.toString(),trainingSchedule.getDate().toString(),idWorker,trainingSchedule.getId()).size() != 0) {
                 ObjectError error = new ObjectError("startTime", "В этот промежуток времени уже есть тренеровка у другого человека.");
                 bindingResult.addError(error);
                 erorsB = false;
@@ -228,10 +228,14 @@ public class TrainingScheduleController {
 
         trainingSchedule.setSubscriptionSale_list(subscriptionSale);
         trainingSchedule.setWork_list(workerRepository.findById(idWorker).orElseThrow());
-
         trainingScheduleRepository.save(trainingSchedule);
         return "redirect:/trainingschedule/";
+    }
 
+    private boolean checkErrors(){
+        boolean errorsB = true;
+
+        return errorsB;
     }
     /*private static boolean dateRangesAreOverlaping(LocalTime start1, LocalTime end1, LocalTime start2, LocalTime end2) {
         return (((end1 == null) || (start2 == null) || end1.isAfter(start2)) &&

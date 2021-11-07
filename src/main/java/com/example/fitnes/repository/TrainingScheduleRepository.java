@@ -14,11 +14,11 @@ public interface TrainingScheduleRepository extends CrudRepository<TrainingSched
 
     @Query(value = "SELECT * FROM `trainingschedule` " +
             "INNER JOIN worker on work_list_id = worker.id" +
-            " WHERE (start_time <= ?2) and (?1 <= end_time) and (DATEDIFF(?3,date) <= 0 and (worker.id = ?4))",nativeQuery = true)
+            " WHERE (start_time <= ?2) and (?1 <= end_time) and (DATEDIFF(?3,date) <= 0) and (worker.id = ?4)",nativeQuery = true)
     ArrayList<TrainingSchedule> findByTimeRangesAreOverlaping(String startTimeSelected,String endTimeSelected,String dateSelected,Long idWorker);
 
     @Query(value = "SELECT * FROM `trainingschedule` " +
             "INNER JOIN worker on work_list_id = worker.id" +
-            " WHERE (start_time <= ?2) and (?1 <= end_time) and (DATEDIFF(?3,date) <= 0 and (worker.id = ?4))",nativeQuery = true)
+            " WHERE (start_time <= ?2) and (?1 <= end_time) and (DATEDIFF(?3,date) <= 0) and (worker.id = ?4) and (trainingschedule.id != ?5)",nativeQuery = true)
     ArrayList<TrainingSchedule> findByTimeRangesAreOverlapingUpdate(String startTimeSelected,String endTimeSelected,String dateSelected,Long idWorker,Long idTrainingSchedule);
 }
