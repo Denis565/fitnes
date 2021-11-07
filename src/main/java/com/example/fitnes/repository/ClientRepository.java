@@ -11,5 +11,7 @@ public interface ClientRepository extends CrudRepository<Client,Long> {
 
     @Query(value = "SELECT * FROM `worker` WHERE phone_list_id = ?1 and employee_list_id = ?2", nativeQuery = true)
     Client findByPhonelist(Long idphone);
+
 }
+
 

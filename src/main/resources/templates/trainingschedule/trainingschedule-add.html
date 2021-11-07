@@ -18,9 +18,9 @@
 <form method="post" th:object="${trainingSchedule}">
 
     <p>ФИО клиента </p>
-    <select name="idClient" class="form-control">
+    <select name="idSubscriptionSale" class="form-control">
         <div th:each="el : ${allClient}">
-            <option th:value="${el.id}" th:text="${el.getSurname()} +'.'+${el.getName()}+'.'+${el.getPatronymic()}+'.'" th:selected="${el.getId() == idClientSelected}"></option>
+            <option th:value="${el.id}" th:text="${el.getClient_list().getSurname()} +'.'+${el.getClient_list().getName()}+'.'+${el.getClient_list().getPatronymic()}+'.' + ' - ' +${el.getSubscription_list().getName()}" th:selected="${el.getId() == idSubscriptionSaleSelected}"></option>
         </div>
     </select>
 

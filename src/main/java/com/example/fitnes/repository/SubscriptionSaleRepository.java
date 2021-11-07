@@ -17,4 +17,6 @@ public interface SubscriptionSaleRepository extends CrudRepository<SubscriptionS
     @Query(value = "SELECT * FROM `subscriptionsale` WHERE client_list_id = ?1 and subscription_list_id = ?2 and DATEDIFF(?3,end_date) > 0 " , nativeQuery = true)
     ArrayList<SubscriptionSale> findByIdWorkerAndIdSubscriptionAndDate(Long idClient, Long idSubscription,String date);
 
+    @Query(value = "SELECT * FROM `subscriptionsale` WHERE DATEDIFF(CURRENT_DATE(),end_date) <= 0", nativeQuery = true)
+    ArrayList<SubscriptionSale> findBySubscriptionSalesList();
 }
