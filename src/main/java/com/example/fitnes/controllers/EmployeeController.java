@@ -31,7 +31,7 @@ public class EmployeeController {
     @Autowired
     private WorkerRepository workerRepository;
 
-    Long idPassport;
+    private Long idPassport;
 
     @GetMapping("/add")
     public String addemployeeview(Employee employee,Passport passport, Model model) {
@@ -88,10 +88,6 @@ public class EmployeeController {
             Model model)
     {
         Employee employeeDelete = employeeRepository.findById(id).orElseThrow();
-        Passport passport = passportRepository.findById(employeeDelete.getPassport().getId()).orElseThrow();
-        employeeDelete.setWorkers(null);
-        employeeDelete.setPassport(null);
-        passportRepository.delete(passport);
         employeeRepository.delete(employeeDelete);
         return "redirect:/";
     }
@@ -120,7 +116,10 @@ public class EmployeeController {
         Passport pass = passportRepository.findById(emp.getPassport().getId()).orElseThrow();
         passport.setNumber(pass.getNumber());
         passport.setSeries(pass.getSeries());
+        passport.setId(pass.getId());
         idPassport = pass.getId();
+
+        employee.setPassport(passport);
 
         model.addAttribute("genderselected", employee.getGender());
 
@@ -141,19 +140,18 @@ public class EmployeeController {
         Passport passSeries = passportRepository.findBySeries(passport.getSeries());
         Passport passNumber = passportRepository.findByNumber(passport.getNumber());
         Employee emp = employeeRepository.findBySurnameAndNameAndPatronymic(employee.getSurname(),employee.getName(),employee.getPatronymic());
-        Long idPas = passport.getId();
 
         if (bindingResult.hasErrors() || bindingResultPass.hasErrors()){
             errorsB = false;
         }
 
-        if (passSeries != null && !passSeries.getId().equals(idPas)){
+        if (passSeries != null && !passSeries.getId().equals(idPassport)){
             ObjectError error = new ObjectError("series","Паспорт с такой серией уже существует");
             bindingResult.addError(error);
             errorsB = false;
         }
 
-        if (passNumber != null && !passNumber.getId().equals(idPas)){
+        if (passNumber != null && !passNumber.getId().equals(idPassport)){
             ObjectError error = new ObjectError("number","Паспорт с таким номером уже существует");
             bindingResult.addError(error);
             errorsB = false;

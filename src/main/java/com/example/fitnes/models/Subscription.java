@@ -21,17 +21,17 @@ public class Subscription {
     @NotNull(message = "Данное поле не должно быть пустым")
     @Max(value = 12,message = "Максимум 12 месяцев")
     @Min(value = 1, message = "Минимум 1 месяцев" )
-    private int timePeriod;
+    private Integer timePeriod;
 
     @NotNull(message = "Данное поле не должно быть пустым")
     @Max(value = 50000,message = "Максимум 50000 рублей")
     @Min(value = 500, message = "Минимум 500 рублей" )
-    private int price;
+    private Integer price;
 
     @NotNull(message = "Данное поле не должно быть пустым")
     @Max(value = 50000,message = "Максимум 50000")
     @Min(value = 1, message = "Минимум 1" )
-    private int subscriptionNumber;
+    private Integer subscriptionNumber;
 
     @ManyToMany
     @JoinTable(name = "service_subscription",
@@ -42,7 +42,7 @@ public class Subscription {
     @OneToMany(mappedBy = "subscription_list",fetch = FetchType.EAGER)
     private Collection<SubscriptionSale> subscriptionSales;
 
-    public Subscription(String name, int timePeriod, int price, int subscriptionNumber) {
+    public Subscription(String name, Integer timePeriod, Integer price, Integer subscriptionNumber) {
         this.name = name;
         this.timePeriod = timePeriod;
         this.price = price;
@@ -67,27 +67,27 @@ public class Subscription {
         this.name = name;
     }
 
-    public int getTimePeriod() {
+    public Integer getTimePeriod() {
         return timePeriod;
     }
 
-    public void setTimePeriod(int timePeriod) {
+    public void setTimePeriod(Integer timePeriod) {
         this.timePeriod = timePeriod;
     }
 
-    public int getPrice() {
+    public Integer getPrice() {
         return price;
     }
 
-    public void setPrice(int price) {
+    public void setPrice(Integer price) {
         this.price = price;
     }
 
-    public int getSubscriptionNumber() {
+    public Integer getSubscriptionNumber() {
         return subscriptionNumber;
     }
 
-    public void setSubscriptionNumber(int subscriptionNumber) {
+    public void setSubscriptionNumber(Integer subscriptionNumber) {
         this.subscriptionNumber = subscriptionNumber;
     }
 

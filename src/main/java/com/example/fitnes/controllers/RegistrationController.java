@@ -46,9 +46,9 @@ public class RegistrationController {
 
         Long l = 1L;
 
-        Post post = postRepository.findById(l).orElseThrow();
+        Post post = postRepository.findById(3L).orElseThrow();
         Employee emp =  employeeRepository.findById(l).orElseThrow();
-        Phone ph =  phoneRepository.findById(l).orElseThrow();
+        Phone ph =  phoneRepository.findById(11L).orElseThrow();
 
         user.setActive(true);
         user.setRoles(Collections.singleton(Role.USER));

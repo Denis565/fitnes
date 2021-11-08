@@ -20,7 +20,7 @@
     </div>
 
     <div th:if="${#fields.hasErrors('subscriptionNumber')}" th:errors="*{subscriptionNumber}" style="color: red"></div>
-    <input type="text" th:field="*{subscriptionNumber}" name="subscriptionNumber" placeholder="Номер абонимента" class="form-control">
+    <input type="number" th:field="*{subscriptionNumber}" name="subscriptionNumber" placeholder="Номер абонимента" class="form-control">
 
     <div th:if="${#fields.hasErrors('name')}" th:errors="*{name}" style="color: red"></div>
     <input type="text" th:field="*{name}" name="name" placeholder="Название абонимента" class="form-control">

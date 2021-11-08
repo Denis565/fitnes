@@ -79,7 +79,6 @@ public class SubscriptionController {
         if (!errorsB){
             Iterable<Service> ser = serviceRepository.findAll();
             model.addAttribute("allService",ser);
-           // model.addAttribute("allServiceSelect",serviceSelectServ);
             return "subscription/subscription-add";
         }
 
